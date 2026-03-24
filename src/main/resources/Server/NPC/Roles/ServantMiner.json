@@ -1,0 +1,22 @@
+{
+  "Type": "Variant",
+  "Reference": "TemplateMiner",
+  "Modify": {
+    "Appearance": "ServantMiner",
+    "_CombatConfig": "CAE_Goblin_Miner",
+    "IdleMotionComponent": "Component_Instruction_Intelligent_Idle_Motion_Follow_Path",
+    "MaxHealth": 38,
+    "IsMemory": true,
+    "MemoriesCategory": "Goblin",
+    "MemoriesNameOverride": "Goblin_Miner",
+    "NameTranslationKey": {
+      "Compute": "NameTranslationKey"
+    }
+  },
+  "Parameters": {
+    "NameTranslationKey": {
+      "Value": "server.npcRoles.miner.name",
+      "Description": "Translation key for NPC name display"
+    }
+  }
+}

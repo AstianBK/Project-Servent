@@ -1,0 +1,10 @@
+{
+  "IncludeBlockTypes": [
+    "Soil_Grass*",
+    "*Moss_Block*",
+    "Ore*",
+    "Rock*",
+    "Rock_Volcanic*",
+    "Rock_Basalt*"
+  ]
+}

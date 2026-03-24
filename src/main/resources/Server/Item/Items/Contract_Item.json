@@ -1,0 +1,103 @@
+{
+  "Model": "Items/contractitem.blockymodel",
+  "Texture": "Items/contractitem.png",
+  "Icon": "Icons/ItemsGenerated/contract_item.png",
+  "PlayerAnimationsId": "Spellbook",
+  "TranslationProperties": {
+    "Name": "server.items.contractItem.name",
+    "Description": "server.items.contractItem.description"
+
+  },
+  "Categories": [
+    "Items.Weapons"
+  ],
+  "Quality": "Common",
+  "ItemLevel": 40,
+  "IconProperties": {
+    "Scale": 0.35,
+    "Translation": [
+      -22,
+      -22
+    ],
+    "Rotation": [
+      45,
+      90,
+      0
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Weapon"
+    ],
+    "Family": [
+      "Spellbook"
+    ]
+  },
+  "Weapon": {},
+  "ItemSoundSetId": "ISS_Weapons_Books",
+  "BuilderTool": {
+    "Tools": [
+      {
+        "Id": "Paint",
+        "IsBrush": true,
+        "BrushConfigurationCommand": "BrushMinerCommand",
+        "BrushData": {
+          "Width": {
+            "Default": 1,
+            "Min": 1,
+            "Max": 100
+          },
+          "Height": {
+            "Default": 1,
+            "Min": 1,
+            "Max": 100
+          },
+          "Shape": {
+            "Default": "Cube"
+          },
+          "Origin": {
+            "Default": "Center"
+          }
+        },
+        "Args": {
+          "BrushDensity": {
+            "Type": "Int",
+            "Default": 100,
+            "Min": 1,
+            "Max": 100
+          },
+          "EnableFeature": {
+            "Type": "Bool",
+            "Default": false
+          },
+          "BrushMode": {
+            "Type": "Option",
+            "Default": "Normal",
+            "Options": [
+              "Normal",
+              "Smooth",
+              "Rough"
+            ]
+          }
+        }
+      }
+
+    ]
+  },
+  "Interactions": {
+    "Primary": "Builder_Tool",
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "SpawnNPC",
+          "EntityId": "ServantMiner",
+          "SpawnOffset": {
+            "X": 0,
+            "Y": 0.5,
+            "Z": 0
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "Type": "Generic",
+  "StartState": "Notify",
+  "Appearance": "Mannequin",
+  "MaxHealth": {
+    "Compute": "MaxHealth"
+  },
+  "NameTranslationKey": "server.npcRoles.Marker.name",
+  "MotionControllerList": [
+    {
+      "Type": "Walk"
+    }
+  ],
+  "Instructions": [
+    {
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "State",
+            "State": "Notify"
+          },
+          "Instructions": [
+            {
+              "Sensor": {
+                "Type": "Any"
+              },
+              "Actions": [
+                {
+                  "Type": "StoreBeaconEntity",
+                  "Message": "MineRequest",
+                  "Range": 15,
+                  "TargetGroups": ["Servenant"],
+                  "ExpirationTime": 10,
+                  "SendCount": 5,
+                  "TargetToSendSlot": "MineCenter"
+                },
+                {
+                  "Type": "State",
+                  "State": "Wait"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "State",
+            "State": "Wait"
+          },
+          "Instructions": [
+            {
+              "Sensor": {
+                "Type": "Timer",
+                "Name": "SelfDestruct",
+                "Time": 3
+              },
+              "Actions": [
+                {
+                  "Type": "Despawn"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Parameters": {
+    "MaxHealth": {
+      "Value": 100,
+      "Description": "Max health for the NPC"
+    }
+  }
+}

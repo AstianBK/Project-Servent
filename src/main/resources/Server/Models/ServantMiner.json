@@ -1,0 +1,64 @@
+{
+  "Model": "NPC/Servant/models/servantworker.blockymodel",
+  "Texture": "NPC/Servant/models/servantminer.png",
+  "EyeHeight": 0.9,
+  "CrouchOffset": -0.25,
+  "HitBox": {
+    "Max": {
+      "X": 0.45,
+      "Y": 1.4,
+      "Z": 0.45
+    },
+    "Min": {
+      "X": -0.45,
+      "Y": 0,
+      "Z": -0.45
+    }
+  },
+  "MinScale": 0.9,
+  "MaxScale": 1.25,
+  "DefaultAttachments": [],
+  "Camera": {
+    "Pitch": {
+      "AngleRange": {
+        "Max": 45,
+        "Min": -45
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    },
+    "Yaw": {
+      "AngleRange": {
+        "Max": 45,
+        "Min": -45
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    }
+  },
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Servant/animations/worker.idle.blockyanim"
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Servant/animations/worker.move.blockyanim"
+        }
+      ]
+    },
+    "Mine": {
+      "Animations": [
+        {
+          "Animation": "NPC/Servant/animations/worker.mine.blockyanim"
+        }
+      ]
+    }
+  }
+}

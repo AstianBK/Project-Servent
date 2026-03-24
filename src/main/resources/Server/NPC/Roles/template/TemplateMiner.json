@@ -1,0 +1,301 @@
+{
+  "Type": "Abstract",
+  "StartState": "Idle",
+  "Appearance": {
+    "Compute": "Appearance"
+  },
+  "MaxHealth": {
+    "Compute": "MaxHealth"
+  },
+  "NameTranslationKey": {
+    "Compute": "NameTranslationKey"
+  },
+  "Debug": "DisplayState",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 10,
+      "Gravity": 10,
+      "MaxFallSpeed": 8,
+      "Acceleration": 10
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Reference": "Component_Instruction_Clear_Status_Animation"
+        },
+        {
+          "Sensor": {
+            "Type": "Any"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Search"
+            }
+          ]
+        }
+      ],
+      "Name": "Idle"
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Search"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "StoreBeaconEntity",
+            "Message": "MineRequest",
+            "Range": 40,
+            "TargetSlot": "MineCenter",
+            "ConsumeMessage": false
+          },
+          "Actions": [
+            {
+              "Type": "StorePosition",
+              "Slot": "MineCenter"
+            },
+            {
+              "Type": "State",
+              "State": "SearchNextBlock"
+            }
+          ],
+          "$Comment": "Detecta una mena y guarda su posición"
+        }
+      ],
+      "Name": "Search"
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "SearchNextBlock"
+      },
+      "Instructions": [
+        {
+          "Reference": "Component_Instruction_Clear_Status_Animation"
+        },
+        {
+          "Sensor": {
+            "Type": "BlockMiner",
+            "Range": 15,
+            "Blocks": "Minable",
+            "Random": false,
+            "Sensor": {
+              "Type": "ReadPosition",
+              "Range": 40,
+              "Slot": "MineCenter"
+            }
+          },
+          "Actions": [
+            {
+              "Type": "StorePosition",
+              "Slot": "Pos"
+            },
+            {
+              "Type": "State",
+              "State": "Go_Mine"
+            }
+          ]
+        }
+      ],
+      "Name": "SearchNextBlock"
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Mine"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "ReadPosition",
+            "Slot": "Pos",
+            "Range": 2,
+            "UseMarkedTarget": false
+          },
+          "Actions": [
+            {
+              "Type": "Sequence",
+              "Blocking": true,
+              "Actions": [
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Mine"
+                },
+                {
+                  "Type": "Miner"
+                }
+              ]
+            }
+          ],
+          "$Comment": "Minar"
+        }
+      ],
+      "Name": "Mine"
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Go_Mine"
+      },
+      "Instructions": [
+        {
+          "Reference": "Component_Instruction_Clear_Status_Animation"
+        },
+        {
+          "Sensor": {
+            "Type": "ReadPosition",
+            "Range": 1.5,
+            "Slot": "Pos",
+            "UseMarkedTarget": false
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Mine"
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          }
+        },
+        {
+          "Sensor": {
+            "Type": "ReadPosition",
+            "Range": 40,
+            "Slot": "Pos",
+            "UseMarkedTarget": false
+          },
+          "Actions": [
+            {
+              "Type": "StorePosition",
+              "Slot": "Pos"
+            }
+          ],
+          "BodyMotion": {
+            "Type": "MaintainDistance",
+            "Distance": 1.2,
+            "Tolerance": 0.1
+          },
+          "$Comment": "Moverse hacia el bloque y mantener distancia"
+        }
+      ],
+      "Name": "Go_Mine"
+    }
+  ],
+  "Parameters": {
+    "Appearance": {
+      "Value": "Goblin_Miner",
+      "Description": "Model to be used"
+    },
+    "Weapons": {
+      "Value": ["Tool_Pickaxe_Scrap"],
+      "Weapons": "Weapon in Hand"
+    },
+    "MineBlockSet": {
+      "Value": "Ores",
+      "Description": "The list of blocksets NPC can mine"
+    },
+    "ViewRange": {
+      "Value": 1,
+      "Description": "View range"
+    },
+    "ViewSector": {
+      "Value": 180,
+      "Description": "View sector"
+    },
+    "HearingRange": {
+      "Value": 8,
+      "Description": "Hearing range"
+    },
+    "SmellRange": {
+      "Value": 8,
+      "Description": "Smell range"
+    },
+    "AlertedRange": {
+      "Value": 30,
+      "Description": "A range within which the player can be seen/sensed when the NPC is alerted to their presence"
+    },
+    "AlertedTime": {
+      "Value": [1, 1],
+      "Description": "The duration for which the NPC is alert before switching to attack"
+    },
+    "TargetGroups": {
+      "Value": ["Goblin"],
+      "Description": "Beacon target groups"
+    },
+    "AttitudeGroup": {
+      "Value": "Goblin_Miner",
+      "Description": "This NPCs attitude group"
+    },
+    "IdleMotionComponent": {
+      "Value": "Component_Instruction_Intelligent_Idle_Motion_Wander",
+      "Description": "The motion component to use when idling. Allows path following instead of normal wander"
+    },
+    "AvoidGroup": {
+      "Value": ["Goblin"],
+      "Description": "NPC group to try and navigate around"
+    },
+    "MaxHealth": {
+      "Value": 100,
+      "Description": "Max health for the NPC"
+    },
+    "IsMemory": {
+      "Value": false,
+      "Description": "Defines if the NPC is a memory"
+    },
+    "MemoriesCategory": {
+      "Value": "Other",
+      "Description": "Defines the category of the memory"
+    },
+    "MemoriesNameOverride": {
+      "Value": "",
+      "Description": "Overrides the memory name if set"
+    },
+    "NameTranslationKey": {
+      "Value": "server.npcRoles.Template.name",
+      "Description": "Translation key for NPC name display"
+    }
+  },
+  "$NodeEditorMetadata": {
+    "StatePositions": {
+      "Search": {
+        "X": 375.52178955078125,
+        "Y": 300.0
+      },
+      "SearchNextBlock": {
+        "X": 396.5960693359375,
+        "Y": 440.675537109375
+      }
+    }
+  },
+  "AttitudeGroup": {
+    "Compute": "AttitudeGroup"
+  },
+  "DefaultNPCAttitude": "Ignore",
+  "DefaultPlayerAttitude": "Hostile",
+  "IsMemory": {
+    "Compute": "IsMemory"
+  },
+  "MemoriesCategory": {
+    "Compute": "MemoriesCategory"
+  },
+  "MemoriesNameOverride": {
+    "Compute": "MemoriesNameOverride"
+  },
+  "DisableDamageGroups": ["Goblin"],
+  "HotbarItems": {
+    "Compute": "Weapons"
+  },
+  "KnockbackScale": 0.5
+}
