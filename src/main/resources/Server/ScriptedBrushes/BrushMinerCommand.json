@@ -5,21 +5,6 @@
       "CommandToRun" : "minerCommand"
     },
     {
-      "Id": "saveindex",
-      "StoredIndexName": "checkMode"
-    },
-    {
-      "Id": "jumpiftoolarg",
-      "ArgName": "BrushMode",
-      "ComparisonType": "Equals",
-      "ComparisonValue": "Rough",
-      "StoredIndexName": "roughMode"
-    },
-    {
-      "Id": "set"
-    },
-
-    {
       "Id": "exit"
     }
   ]

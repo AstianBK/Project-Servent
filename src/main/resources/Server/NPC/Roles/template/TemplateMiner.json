@@ -184,8 +184,14 @@
           ],
           "BodyMotion": {
             "Type": "MaintainDistance",
-            "Distance": 1.2,
-            "Tolerance": 0.1
+            "DesiredDistanceRange": [0.25, 0.5],
+            "TargetDistanceFactor": 0.5,
+            "MoveThreshold": 0.2,
+            "RelativeForwardsSpeed": 1.0,
+            "RelativeBackwardsSpeed": 0.8,
+            "MoveTowardsSlowdownThreshold": 1.0,
+            "StrafingDurationRange": [0.5, 1.2],
+            "StrafingFrequencyRange": [1.5, 3.0]
           },
           "$Comment": "Moverse hacia el bloque y mantener distancia"
         }

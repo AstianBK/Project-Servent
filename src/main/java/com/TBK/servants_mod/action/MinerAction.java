@@ -69,8 +69,7 @@ public class MinerAction extends ActionBase {
 
 
         if(type!=null && !type.getId().equals("Empty")){
-            ServantMod.LOGGER.atInfo().log("Item %s",npc.getInventory().getItemInHand());
-            BlockHarvestUtils.performBlockDamage(npc,ref,lol,null,null,null,false,10.0F,3,chunkReference,store,chunkStoreStore);
+            BlockHarvestUtils.performBlockDamage(npc,ref,lol,npc.getInventory().getItemInHand(),null,null,false,10.0F,3,chunkReference,store,chunkStoreStore);
         }else{
             npc.getRole().getStateSupport().setState(ref,"SearchNextBlock",null,store);
         }

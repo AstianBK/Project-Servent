@@ -62,7 +62,6 @@ public class SensorEntityMarker extends SensorBase {
                     if (targetRef != null && targetRef.isValid()) {
                         MinerComponent minerComponent = store.getComponent(targetRef, ServantMod.MINER_COMPONENT);
                         TransformComponent targetTransformComponent = (TransformComponent)store.getComponent(targetRef, TRANSFORM_COMPONENT_TYPE);
-                        ServantMod.LOGGER.atInfo().log("Match %s :", minerComponent.targetPos);
                         assert targetTransformComponent != null;
 
                         Vector3d targetPosition = targetTransformComponent.getPosition();
@@ -77,7 +76,6 @@ public class SensorEntityMarker extends SensorBase {
                         } else {
                             MinerComponent minerComponent1 = store.getComponent(ref,ServantMod.MINER_COMPONENT);
                             minerComponent1.targetPos = minerComponent.targetPos;
-                            ServantMod.LOGGER.atInfo().log("chompbot %s :", minerComponent1.targetPos);
 
                             if (this.targetSlot >= 0) {
                                 role.getMarkedEntitySupport().setMarkedEntity(this.targetSlot, targetRef);

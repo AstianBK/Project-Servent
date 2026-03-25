@@ -4,7 +4,11 @@ import com.TBK.servants_mod.ServantMod;
 import com.TBK.servants_mod.component.MinerComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Vector2d;
+import com.hypixel.hytale.math.vector.Vector2i;
 import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.BlockParticleEvent;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -74,45 +78,63 @@ public class SensorMiner extends SensorBase {
                     return false;
                 }
 
-                for (int x = -width; x < width+1; x++) {
-                    for (int z = -width; z < width+1; z++) {
+                Vector3i best = null;
+                double bestDist = Double.MAX_VALUE;
+                Blackboard blackboard = (Blackboard) store.getResource(Blackboard.getResourceType());
 
-                        int bx = (int) (pos.x + x);
-                        int by = (int) pos.y;
-                        int bz = (int) (pos.z + z);
+                ResourceView resourceView = (ResourceView) blackboard.getView(ResourceView.class, ResourceView.indexViewFromWorldPosition(pos));
 
+                for (int r = 0; r <= width; r++) {
+                    for (int x = -r; x <= r; x++) {
+                        for (int z = -r; z <= r; z++) {
 
-                        BlockType type = world.getBlockType(bx, by, bz);
+                            if (Math.abs(x) != r && Math.abs(z) != r) continue;
 
-                        if (type == null) {
-                            continue;
+                            int bx = (int) pos.x + x;
+                            int by = (int) pos.y;
+                            int bz = (int) pos.z + z;
+
+                            BlockType type = world.getBlockType(bx, by, bz);
+                            if (type == null || type.getId().equals("Empty")) continue;
+
+                            if (resourceView.isBlockReserved(bx, by, bz)) continue;
+
+                            double dist = entityPos.distanceTo(bx, by, bz);
+
+                            if (dist < bestDist) {
+                                bestDist = dist;
+                                best = new Vector3i(bx, by, bz);
+                            }
                         }
-
-                        if (type.getId().equals("Empty")) {
-                            continue;
-                        }
-
-                        Blackboard blackboard = (Blackboard) store.getResource(Blackboard.getResourceType());
-
-                        ResourceView resourceView = (ResourceView) blackboard.getView(ResourceView.class, ResourceView.indexViewFromWorldPosition(pos));
-
-                        if (resourceView.isBlockReserved(bx, by, bz)) {
-                            continue;
-                        }
-
-                        resourceView.reserveBlock(npcComponent, bx, by, bz);
-
-                        pos.assign(bx+0.5, by, bz+0.5);
-
-                        this.positionProvider.setTarget(pos);
-
-
-                        return true;
-                    }
-                    if(x == width){
-                        role.getMarkedEntitySupport().getStoredPosition(slot).assign(pos.x,pos.y-1,pos.z);
                     }
                 }
+                if (best != null) {
+                    resourceView.reserveBlock(npcComponent, best.x, best.y, best.z);
+
+                    pos.assign(best.x + 0.5, best.y, best.z + 0.5);
+                    this.positionProvider.setTarget(pos);
+
+                    return true;
+                }
+                double bloquesPorVuelta = 4 * (minerComponent.targetPos.x-1);
+
+                double pasoAngular = (2 * Math.PI) / (bloquesPorVuelta);
+
+                double sin = Math.sin(pasoAngular * pos.y) * width;
+                double cos = Math.cos(pasoAngular * pos.y) * width;
+
+                double max = Math.max(Math.abs(sin), Math.abs(cos));
+
+                int xA = (int) Math.round(sin / max * width);
+                int zA = (int) Math.round(cos / max * width);
+
+
+                if(world.getBlockType((int) (pos.x+xA), (int)(pos.y + 1), (int) (pos.z+zA)).getId().equals("Empty")){
+                    world.setBlock((int) (pos.x+xA), (int)(pos.y + 1), (int) (pos.z+zA), "Rock_Stone_Cobble");
+                    world.getNotificationHandler().sendBlockParticle((pos.x+xA)+0.5, (pos.y + 1.5),(pos.z+zA)+0.5,BlockType.getBlockIdOrUnknown("Rock_Crystal_Red_Block"," "), BlockParticleEvent.Break);
+                }
+
+                role.getMarkedEntitySupport().getStoredPosition(slot).assign(pos.x,pos.y-1,pos.z);
             }
         }
         this.positionProvider.clear();

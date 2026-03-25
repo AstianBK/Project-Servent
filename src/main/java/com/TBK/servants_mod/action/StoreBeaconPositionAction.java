@@ -65,7 +65,6 @@ public class StoreBeaconPositionAction extends ActionBase {
 
     public boolean execute(@Nonnull Ref<EntityStore> ref, @Nonnull Role role, InfoProvider sensorInfo, double dt, @Nonnull Store<EntityStore> store) {
         super.execute(ref, role, sensorInfo, dt, store);
-        ServantMod.LOGGER.atInfo().log("Execute waching");
         Ref<EntityStore> target = this.targetToSendSlot >= 0 ? role.getMarkedEntitySupport().getMarkedEntityRef(this.targetToSendSlot) : ref;
         PositionCache positionCache = role.getPositionCache();
         if (this.sendCount <= 0) {
