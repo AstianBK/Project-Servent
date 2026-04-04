@@ -35,67 +35,18 @@
   },
   "Weapon": {},
   "ItemSoundSetId": "ISS_Weapons_Books",
-  "BuilderTool": {
-    "Tools": [
-      {
-        "Id": "Paint",
-        "IsBrush": true,
-        "BrushConfigurationCommand": "BrushMinerCommand",
-        "BrushData": {
-          "Width": {
-            "Default": 1,
-            "Min": 1,
-            "Max": 100
-          },
-          "Height": {
-            "Default": 1,
-            "Min": 1,
-            "Max": 100
-          },
-          "Shape": {
-            "Default": "Cube"
-          },
-          "Origin": {
-            "Default": "Center"
-          }
-        },
-        "Args": {
-          "BrushDensity": {
-            "Type": "Int",
-            "Default": 100,
-            "Min": 1,
-            "Max": 100
-          },
-          "EnableFeature": {
-            "Type": "Bool",
-            "Default": false
-          },
-          "BrushMode": {
-            "Type": "Option",
-            "Default": "Normal",
-            "Options": [
-              "Normal",
-              "Smooth",
-              "Rough"
-            ]
-          }
-        }
-      }
-
-    ]
-  },
   "Interactions": {
-    "Primary": "Builder_Tool",
+    "Primary": {
+      "Interactions": [
+        {
+          "Type": "SummonMiner"
+        }
+      ]
+    },
     "Secondary": {
       "Interactions": [
         {
-          "Type": "SpawnNPC",
-          "EntityId": "ServantMiner",
-          "SpawnOffset": {
-            "X": 0,
-            "Y": 0.5,
-            "Z": 0
-          }
+          "Type": "ModifyArea"
         }
       ]
     }

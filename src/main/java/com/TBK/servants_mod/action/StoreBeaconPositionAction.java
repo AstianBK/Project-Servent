@@ -127,7 +127,7 @@ public class StoreBeaconPositionAction extends ActionBase {
             matrix.rotateAxis(angleY + (double)((float)Math.PI / 2F), (double)0.0F, (double)1.0F, (double)0.0F, tmp);
             double angleX = Math.atan2(Math.sqrt(x * x + z * z), -y);
             matrix.rotateAxis(angleX, (double)1.0F, (double)0.0F, (double)0.0F, tmp);
-            DebugUtils.addArrow(((EntityStore)componentAccessor.getExternalData()).getWorld(), matrix, color, pos.distanceTo(targetPos), 5.0F, true);
+            DebugUtils.addArrow(((EntityStore)componentAccessor.getExternalData()).getWorld(), matrix, color, pos.distanceTo(targetPos), 5.0F, 3);
         }
 
         BeaconSupport beaconSupportComponent = (BeaconSupport)componentAccessor.getComponent(targetRef, BeaconSupport.getComponentType());

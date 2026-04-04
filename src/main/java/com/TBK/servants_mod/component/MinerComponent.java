@@ -8,6 +8,8 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jspecify.annotations.Nullable;
 
+import java.util.UUID;
+
 public class MinerComponent implements Component<EntityStore> {
     public static final BuilderCodec<MinerComponent> CODEC =
             BuilderCodec.builder(MinerComponent.class, MinerComponent::new)
@@ -19,13 +21,6 @@ public class MinerComponent implements Component<EntityStore> {
                             (o, v) -> o.targetPos = v,
                             o -> o.targetPos
                     ).add()
-
-                    .append(
-                            new KeyedCodec<>("Progress", Codec.FLOAT),
-                            (o, v) -> o.progress = v,
-                            o -> o.progress
-                    ).add()
-
                     .append(
                             new KeyedCodec<>("BreakTime", Codec.FLOAT),
                             (o, v) -> o.breakTime = v,
@@ -48,8 +43,6 @@ public class MinerComponent implements Component<EntityStore> {
     /** Posición del bloque que está minando */
     public Vector3i targetPos;
 
-    /** Progreso actual de minado (segundos) */
-    public float progress;
 
     /** Tiempo total necesario para romper el bloque */
     public float breakTime;
@@ -61,7 +54,6 @@ public class MinerComponent implements Component<EntityStore> {
     public boolean mining;
 
     public MinerComponent() {
-        this.progress = 0f;
         this.breakTime = 1.5f;
         this.mining = false;
     }    @Override
@@ -70,7 +62,6 @@ public class MinerComponent implements Component<EntityStore> {
         minerComponent.mining = this.mining;
         minerComponent.targetPos = this.targetPos;
         minerComponent.breakTime = this.breakTime;
-        minerComponent.progress = this.progress;
         return minerComponent;
     }
 }

@@ -170,6 +170,7 @@
           }
         },
         {
+          "Continue": true,
           "Sensor": {
             "Type": "ReadPosition",
             "Range": 40,
@@ -194,6 +195,78 @@
             "StrafingFrequencyRange": [1.5, 3.0]
           },
           "$Comment": "Moverse hacia el bloque y mantener distancia"
+        },
+        {
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Self",
+              "Filters": [
+                {
+                  "Type": "MovementState",
+                  "State": "IDLE"
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "idle_timer"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Self",
+            "Filters": [
+              {
+                "Type": "MovementState",
+                "State": "IDLE"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "TimerStart",
+              "Name": "idle_timer",
+              "StartValueRange": [5.0, 5.0],
+              "RestartValueRange": [5.0, 5.0],
+              "Rate": 1.0,
+              "Repeating": false
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "ReadPosition",
+                "Range": 50,
+                "Slot": "Pos"
+              },
+              {
+                "Type": "Timer",
+                "Name": "idle_timer",
+                "TimeRemainingRange": [4, 5]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "SpawnParticles",
+              "Offset": [0, 2.1, 0],
+              "ParticleSystem": "Alerted"
+            },
+            {
+              "Type": "DisplayName",
+              "DisplayName": "5"
+            }
+          ],
+          "BodyMotion": {
+            "Type": "Teleport"
+          }
         }
       ],
       "Name": "Go_Mine"

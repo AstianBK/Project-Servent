@@ -34,6 +34,7 @@ public class SensorMiner extends SensorBase {
     protected final PositionProvider positionProvider = new PositionProvider();
     protected final Sensor sensor;
     protected final int slot;
+
     public SensorMiner(@Nonnull SensorMinerBuilder builder, @Nonnull BuilderSupport support,Sensor sensor) {
         super(builder);
 

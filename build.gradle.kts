@@ -1,6 +1,6 @@
 plugins {
     `maven-publish`
-    id("hytale-mod") version "0.+"
+    id("hytale-mod") version "0.7.2-alpha"
 }
 
 group = "com.TBK"
