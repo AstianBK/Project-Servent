@@ -1,24 +1,45 @@
 {
-  "Model": "Items/commandgauntlet.blockymodel",
-  "Texture": "Items/commandgauntlet.png",
+  "Model": "Items/contractitem.blockymodel",
+  "Texture": "Items/contractitem.png",
   "Icon": "Icons/ItemsGenerated/contract_item.png",
-  "PlayerAnimationsId": "Gauntlet",
-
+  "PlayerAnimationsId": "Spellbook",
   "TranslationProperties": {
     "Name": "server.items.contractItem.name",
     "Description": "server.items.contractItem.description"
-  },
 
+  },
+  "Categories": [
+    "Items.Weapons"
+  ],
   "Quality": "Common",
   "ItemLevel": 40,
+  "IconProperties": {
+    "Scale": 0.35,
+    "Translation": [
+      -22,
+      -22
+    ],
+    "Rotation": [
+      45,
+      90,
+      0
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Weapon"
+    ],
+    "Family": [
+      "Spellbook"
+    ]
+  },
   "Weapon": {},
   "ItemSoundSetId": "ISS_Weapons_Books",
-
   "Interactions": {
     "Primary": {
       "Interactions": [
         {
-          "Type": "SummonMiner"
+          "Type": "CollectInteraction"
         }
       ]
     },

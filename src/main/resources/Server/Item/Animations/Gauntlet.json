@@ -1,0 +1,47 @@
+{
+  "Parent": "Item",
+  "Animations": {
+    "IdlePos": {
+      "ThirdPerson": "Characters/gauntlet/gauntlet.idle.blockyanim",
+      "ThirdPersonMoving": "Characters/gauntlet/gauntlet.idle.blockyanim",
+      "FirstPerson": "Characters/gauntlet/gauntlet.idle.blockyanim",
+      "ThirdPersonFace": "Characters/Animations/Expressions/Frown.blockyanim",
+      "Speed": 1
+    },
+    "OrderServant": {
+      "ThirdPerson": "Characters/gauntlet/gauntlet.point.blockyanim",
+      "ThirdPersonMoving": "Characters/gauntlet/gauntlet.point.blockyanim",
+      "FirstPerson": "Characters/gauntlet/gauntlet.point.blockyanim",
+      "ThirdPersonFace": "Characters/Animations/Expressions/Rage.blockyanim",
+      "Speed": 1,
+      "BlendingDuration": 0
+    },
+    "OrderStopServant": {
+      "ThirdPerson": "Characters/gauntlet/gauntlet.call.blockyanim",
+      "ThirdPersonMoving": "Characters/gauntlet/gauntlet.call.blockyanim",
+      "FirstPerson": "Characters/gauntlet/gauntlet.call.blockyanim",
+      "ThirdPersonFace": "Characters/Animations/Expressions/Frown.blockyanim",
+      "Speed": 1
+    },
+    "BannedPose": {
+      "ThirdPerson": "Characters/gauntlet/gauntlet.banner.blockyanim",
+      "ThirdPersonMoving": "Characters/gauntlet/gauntlet.banner.blockyanim",
+      "FirstPerson": "Characters/gauntlet/gauntlet.banner.blockyanim",
+      "ThirdPersonFace": "Characters/Animations/Expressions/Rage.blockyanim",
+      "Speed": 1,
+      "BlendingDuration": 0
+    }
+  },
+  "WiggleWeights": {
+    "Pitch": 3,
+    "PitchDeceleration": 0.1,
+    "Roll": 0.1,
+    "RollDeceleration": 0.1,
+    "X": 3,
+    "XDeceleration": 0.1,
+    "Y": 0.1,
+    "YDeceleration": 0.1,
+    "Z": 0.1,
+    "ZDeceleration": 0.1
+  }
+}

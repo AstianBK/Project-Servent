@@ -68,11 +68,18 @@ public class MinerAction extends ActionBase {
 
 
 
-        if(type!=null && !type.getId().equals("Empty")){
-            BlockHarvestUtils.performBlockDamage(npc,ref,lol,npc.getInventory().getItemInHand(),null,null,false,10.0F,3,chunkReference,store,chunkStoreStore);
-        }else{
-            npc.getRole().getStateSupport().setState(ref,"SearchNextBlock",null,store);
+        if(transformComponent.getPosition().distanceTo(lol)<5.0F){
+            if(type!=null && !type.getId().equals("Empty")){
+                BlockHarvestUtils.performBlockDamage(npc,ref,lol,npc.getInventory().getItemInHand(),null,null,false,10.0F,3,chunkReference,store,chunkStoreStore);
+            }else{
+                npc.getRole().getStateSupport().setState(ref,"SearchNextBlock",null,store);
+                resourceView.clearReservation(ref);
+            }
+        }else {
+            npc.getRole().getStateSupport().setState(ref,"Go_Mine",null,store);
+            resourceView.clearReservation(ref);
         }
+
         return true;
     }
 }

@@ -1,0 +1,7 @@
+{
+  "Type" : "Simple",
+  "Effects": {
+    "ItemAnimationId": "OrderStopServant",
+    "WorldSoundEventId": "SFX_Skeleton_Mage_Spellbook_Charge"
+  }
+}

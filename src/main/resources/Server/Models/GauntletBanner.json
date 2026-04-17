@@ -1,0 +1,30 @@
+{
+  "Model": "NPC/Servant/models/commandgauntlet.blockymodel",
+  "Texture": "NPC/Servant/models/commandgauntlet.png",
+  "EyeHeight": 0.9,
+  "CrouchOffset": -0.25,
+  "HitBox": {
+    "Max": {
+      "X": 0.45,
+      "Y": 1.4,
+      "Z": 0.45
+    },
+    "Min": {
+      "X": -0.45,
+      "Y": 0,
+      "Z": -0.45
+    }
+  },
+  "MinScale": 0.9,
+  "MaxScale": 1.25,
+  "DefaultAttachments": [],
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Servant/animations/gauntlet.banned.blockyanim"
+        }
+      ]
+    }
+  }
+}
