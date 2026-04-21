@@ -1,0 +1,219 @@
+{
+  "Type": "Abstract",
+  "StartState": "Idle",
+  "Appearance": {
+    "Compute": "Appearance"
+  },
+  "MaxHealth": {
+    "Compute": "MaxHealth"
+  },
+  "NameTranslationKey": {
+    "Compute": "NameTranslationKey"
+  },
+  "MotionControllerList": [
+    {
+      "Type": "Walk"
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Self",
+            "Filters" : [
+              
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Collect"
+            },
+            {
+              "Type": "StorePosition",
+              "Slot": "ChestPos"
+            },
+            {
+              "Type": "StorePosition",
+              "Slot": "OriginPos"
+            }
+          ]
+        }
+      ],
+      "Name": "Idle"
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Collect"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Self",
+                "Filters": [
+                  {
+                    "Type": "Inventory",
+                    "CountRange": [300, 300]
+                  }
+                ]
+              },
+              {
+                "Type": "SearchChest"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "Sequence",
+              "Blocking": true,
+              "Actions": [
+                {
+                  "Type": "State",
+                  "State": "ToChest"
+                },
+                {
+                  "Type": "DisplayName",
+                  "DisplayName": "To Chest"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "DroppedItem",
+                "Range": 10,
+                "Items": ["*"],
+                "ViewSector": 120
+              },
+              {
+                "Type": "Not",
+                "Sensor": {
+                  "Type": "Self",
+                  "Filters": [
+                    {
+                      "Type": "Inventory",
+                      "CountRange": [300, 300],
+                      "FreeSlotRange": [0, 0]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "PickUpItem",
+              "Items": ["*"],
+              "Delay": [2, 2],
+              "StorageTarget": "Inventory"
+            }
+          ],
+          "BodyMotion": {
+            "Type": "Seek",
+            "StopDistance": 0.5
+          },
+          "Continue": true
+        }
+      ],
+      "Name": "Collect"
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "ToChest"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "ReadPosition",
+            "Slot": "ChestPos",
+            "Range": 2
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "AddInventory"
+            }
+          ],
+          "BodyMotion": {
+            "Type": "Seek",
+            "StopDistance": 0.5
+          }
+        },
+        {
+          "Sensor": {
+            "Type": "ReadPosition",
+            "Slot": "ChestPos",
+            "Range": 150
+          },
+          "Actions": [
+            {
+              "Type": "DisplayName",
+              "DisplayName": "Yendo al cofre"
+            }
+          ],
+          "BodyMotion": {
+            "Type": "Seek",
+            "StopDistance": 0.5
+          }
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "AddInventory"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Any"
+          },
+          "Actions": [
+            {
+              "Type": "DisplayName",
+              "DisplayName": "Guardando...."
+            },
+            {
+              "Type": "State",
+              "State": "Collect"
+            },
+            {
+              "Type": "AddItemsToInventory"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Parameters": {
+    "Appearance": {
+      "Value": "Goblin_Collector",
+      "Description": "Model"
+    },
+    "MaxHealth": {
+      "Value": 80,
+      "Description": "Health"
+    },
+    "NameTranslationKey": {
+      "Value": "server.npc.collector.name",
+      "Description": "Name"
+    }
+  },
+  "DefaultNPCAttitude": "Ignore",
+  "DefaultPlayerAttitude": "Ignore",
+  "KnockbackScale": 0.5
+}

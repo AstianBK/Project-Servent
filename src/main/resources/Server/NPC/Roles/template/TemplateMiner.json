@@ -170,7 +170,6 @@
           }
         },
         {
-          "Continue": true,
           "Sensor": {
             "Type": "ReadPosition",
             "Range": 40,
@@ -194,64 +193,11 @@
             "StrafingDurationRange": [0.5, 1.2],
             "StrafingFrequencyRange": [1.5, 3.0]
           },
-          "$Comment": "Moverse hacia el bloque y mantener distancia"
+          "Continue": true
         },
         {
           "Sensor": {
-            "Type": "Not",
-            "Sensor": {
-              "Type": "Self",
-              "Filters": [
-                {
-                  "Type": "MovementState",
-                  "State": "IDLE"
-                }
-              ]
-            }
-          },
-          "Actions": [
-            {
-              "Type": "TimerRestart",
-              "Name": "idle_timer"
-            }
-          ]
-        },
-        {
-          "Sensor": {
-            "Type": "Self",
-            "Filters": [
-              {
-                "Type": "MovementState",
-                "State": "IDLE"
-              }
-            ]
-          },
-          "Actions": [
-            {
-              "Type": "TimerStart",
-              "Name": "idle_timer",
-              "StartValueRange": [5.0, 5.0],
-              "RestartValueRange": [5.0, 5.0],
-              "Rate": 1.0,
-              "Repeating": false
-            }
-          ]
-        },
-        {
-          "Sensor": {
-            "Type": "And",
-            "Sensors": [
-              {
-                "Type": "ReadPosition",
-                "Range": 50,
-                "Slot": "Pos"
-              },
-              {
-                "Type": "Timer",
-                "Name": "idle_timer",
-                "TimeRemainingRange": [4, 5]
-              }
-            ]
+            "Type": "Stuck"
           },
           "Actions": [
             {
@@ -261,11 +207,24 @@
             },
             {
               "Type": "DisplayName",
-              "DisplayName": "5"
+              "DisplayName": "TP"
+            },
+            {
+              "Type": "Sequence",
+              "Blocking": true,
+              "Actions": [
+                {
+                  "Type": "ActionTeleportToSlot"
+                }
+              ]
+            },
+            {
+              "Type": "State",
+              "State": "SearchNextBlock"
             }
           ],
           "BodyMotion": {
-            "Type": "Teleport"
+            "Type": "Nothing"
           }
         }
       ],

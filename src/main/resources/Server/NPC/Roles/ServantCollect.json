@@ -1,0 +1,16 @@
+{
+  "Type": "Variant",
+  "Reference": "TemplateCollect",
+  "Modify": {
+    "Appearance": "ServantMiner",
+    "NameTranslationKey": {
+      "Compute": "NameTranslationKey"
+    }
+  },
+  "Parameters": {
+    "NameTranslationKey": {
+      "Value": "server.npcRoles.collect.name",
+      "Description": "Translation key for NPC name display"
+    }
+  }
+}

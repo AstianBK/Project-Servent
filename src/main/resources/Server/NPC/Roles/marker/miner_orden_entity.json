@@ -1,16 +1,11 @@
 {
   "Type": "Generic",
   "StartState": "Notify",
-  "Appearance": "Mannequin",
+  "Appearance": "GauntletBanner",
   "MaxHealth": {
     "Compute": "MaxHealth"
   },
   "NameTranslationKey": "server.npcRoles.Marker.name",
-  "MotionControllerList": [
-    {
-      "Type": "Walk"
-    }
-  ],
   "Instructions": [
     {
       "Instructions": [
