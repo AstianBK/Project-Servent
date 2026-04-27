@@ -22,7 +22,7 @@ public class BuilderSensorStuck extends BuilderSensorBase {
     @Override
     public Builder<Sensor> readConfig(@Nonnull JsonElement data) {
         this.getDouble(data, "MaxMoveDistance", this.maxMoveDistance, 0.1, DoubleSingleValidator.greater0(), BuilderDescriptorState.Experimental, "Minimum movement distance to consider the entity moving", "ss");
-        this.getDouble(data, "TimeToStuck", this.timeToStuck, 3.0, DoubleSingleValidator.greater0(), BuilderDescriptorState.Experimental, "Time in seconds before considering the entity stuck", "ss");
+        this.getDouble(data, "TimeToStuck", this.timeToStuck, 4.0, DoubleSingleValidator.greater0(), BuilderDescriptorState.Experimental, "Time in seconds before considering the entity stuck", "ss");
         return this;
     }
 

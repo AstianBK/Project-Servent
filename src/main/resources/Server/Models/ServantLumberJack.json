@@ -1,6 +1,6 @@
 {
   "Model": "NPC/Servant/models/servantworker.blockymodel",
-  "Texture": "NPC/Servant/models/servantminer.png",
+  "Texture": "NPC/Servant/models/servantlumber.png",
   "EyeHeight": 0.7,
   "CrouchOffset": -0.25,
   "HitBox": {
@@ -53,10 +53,10 @@
         }
       ]
     },
-    "Mine": {
+    "Chop": {
       "Animations": [
         {
-          "Animation": "NPC/Servant/animations/worker.mine.blockyanim"
+          "Animation": "NPC/Servant/animations/lumber.chop.blockyanim"
         }
       ]
     }

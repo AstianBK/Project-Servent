@@ -21,13 +21,7 @@ public class InfoCommand extends AbstractPlayerCommand {
     }
 
     @Override
-    protected void execute(
-            @Nonnull CommandContext context,
-            @Nonnull Store<EntityStore> store,
-            @Nonnull Ref<EntityStore> ref,
-            @Nonnull PlayerRef playerRef,
-            @Nonnull World world
-    ) {
+    protected void execute(@Nonnull CommandContext context, @Nonnull Store<EntityStore> store, @Nonnull Ref<EntityStore> ref, @Nonnull PlayerRef playerRef, @Nonnull World world) {
         Player player = (Player) store.getComponent(ref, Player.getComponentType());
 
         // Generate some demo stats

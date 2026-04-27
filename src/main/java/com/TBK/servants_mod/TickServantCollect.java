@@ -51,7 +51,6 @@ public class TickServantCollect extends EntityTickingSystem<EntityStore> {
             List<ItemStack> stackList=new ArrayList<>();
             for (ComponentType<EntityStore, ? extends InventoryComponent> componentType : InventoryComponent.HOTBAR_UTILITY_CONSUMABLE_STORAGE){
                 InventoryComponent inventory = store.getComponent(ref,componentType);
-                ServantMod.LOGGER.atInfo().log("Inventory :%s",inventory.getInventory().getCapacity());
                 for (int i= 0; i<inventory.getInventory().getCapacity() ;i++){
                     stackList.add(inventory.getInventory().getItemStack((short) i));
                 }

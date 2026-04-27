@@ -21,7 +21,7 @@ public class BuilderMinerAction extends BuilderActionBase {
 
     @Override
     public @Nullable Action build(BuilderSupport builderSupport) {
-        return new MinerAction(this);
+        return new MinerAction(this,builderSupport);
     }
 
     @Nonnull

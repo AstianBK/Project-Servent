@@ -1,5 +1,6 @@
 {
   "IncludeRoles": [
-    "ServantMiner"
+    "ServantMiner",
+    "ServantLumberJack"
   ]
 }

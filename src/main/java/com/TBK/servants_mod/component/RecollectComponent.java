@@ -1,6 +1,5 @@
 package com.TBK.servants_mod.component;
 
-import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Component;
@@ -19,15 +18,21 @@ public class RecollectComponent implements Component<EntityStore> {
                             (o, v) -> o.targetPos = v,
                             o -> o.targetPos
                     ).add()
+                    .append(
+                            new KeyedCodec<>("OriginPos", Vector3i.CODEC),
+                            (o, v) -> o.originPos = v,
+                            o -> o.originPos
+                    ).add()
                     .build();
     public Vector3i targetPos;
-
+    public Vector3i originPos;
     public RecollectComponent() {
 
     }    @Override
     public @Nullable Component<EntityStore> clone() {
-        RecollectComponent minerComponent = new RecollectComponent();
-        minerComponent.targetPos = this.targetPos;
-        return minerComponent;
+        RecollectComponent recollectComponent = new RecollectComponent();
+        recollectComponent.targetPos = this.targetPos;
+        recollectComponent.originPos = this.originPos;
+        return recollectComponent;
     }
 }

@@ -1,8 +1,13 @@
 package com.TBK.servants_mod.sensor;
 
+import com.TBK.servants_mod.ServantMod;
+import com.TBK.servants_mod.component.MinerComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.util.MathUtil;
 import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
@@ -21,13 +26,14 @@ public class SensorStuck extends SensorBase {
 
     private Vector3d lastPos = null;
 
-    private double stuckTimer = 0;
     private final PositionProvider positionProvider = new PositionProvider();
 
+    private final int slot;
     public SensorStuck(BuilderSensorStuck sensorBase, BuilderSupport builderSupport) {
         super(sensorBase);
         this.maxMoveDistance = sensorBase.getMaxMoveDistance(builderSupport);
         this.timeToStuck = sensorBase.getTimeToStuck(builderSupport);
+        this.slot = builderSupport.getTargetSlot("Pos");
     }
 
     @Override
@@ -42,22 +48,40 @@ public class SensorStuck extends SensorBase {
             return false;
         }
 
-        double dist = currentPos.distanceTo(lastPos);
+        MinerComponent component = store.getComponent(ref, ServantMod.MINER_COMPONENT);
+        if(component!=null && component.cooldownTP==0){
+            Vector3d target = role.getMarkedEntitySupport().getStoredPosition(slot);
+            Vector3i pos = new Vector3i(MathUtil.floor(target.getX()), MathUtil.floor( target.getY()), MathUtil.floor(target.getZ()));
 
-        if (dist < maxMoveDistance) {
-            stuckTimer += dt;
-        } else {
-            stuckTimer = 0;
+            double dist = currentPos.distanceTo(lastPos);
+
+            BlockType type = store.getExternalData().getWorld().getBlockType(pos);
+            if (type==null || type.getId().equals("Empty") || store.getExternalData().getWorld().getFluidId(pos.x,pos.y,pos.z)>0){
+                role.getStateSupport().setState(ref,"SearchNextBlock",null,store);
+                return false;
+            }
+            if (dist < maxMoveDistance) {
+                component.breakTime += (float) dt;
+            } else {
+                component.breakTime = 0;
+            }
+
+            lastPos.assign(currentPos);
+
+            this.positionProvider.setTarget(this.lastPos);
+
+            if(component.breakTime >= timeToStuck){
+                component.cooldownTP=200;
+                return true;
+            }
+            return false;
         }
 
-        lastPos.assign(currentPos);
-
-        this.positionProvider.setTarget(this.lastPos);
-        return stuckTimer >= timeToStuck;
+        return false;
     }
 
     @Override
     public @Nullable InfoProvider getSensorInfo() {
-        return this.positionProvider;
+        return null;
     }
 }

@@ -75,7 +75,9 @@ public class SensorEntityMarker extends SensorBase {
                             return false;
                         } else {
                             MinerComponent minerComponent1 = store.getComponent(ref,ServantMod.MINER_COMPONENT);
-                            minerComponent1.targetPos = minerComponent.targetPos;
+                            if(minerComponent1!=null){
+                                minerComponent1.targetPos = minerComponent.targetPos;
+                            }
 
                             if (this.targetSlot >= 0) {
                                 role.getMarkedEntitySupport().setMarkedEntity(this.targetSlot, targetRef);

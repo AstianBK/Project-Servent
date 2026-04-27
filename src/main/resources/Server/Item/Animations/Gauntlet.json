@@ -1,12 +1,13 @@
 {
   "Parent": "Item",
   "Animations": {
-    "IdlePos": {
+    "Idle": {
       "ThirdPerson": "Characters/gauntlet/gauntlet.idle.blockyanim",
       "ThirdPersonMoving": "Characters/gauntlet/gauntlet.idle.blockyanim",
       "FirstPerson": "Characters/gauntlet/gauntlet.idle.blockyanim",
       "ThirdPersonFace": "Characters/Animations/Expressions/Frown.blockyanim",
-      "Speed": 1
+      "Speed": 1,
+      "Looping" : true
     },
     "OrderServant": {
       "ThirdPerson": "Characters/gauntlet/gauntlet.point.blockyanim",

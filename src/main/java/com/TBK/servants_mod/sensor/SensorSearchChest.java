@@ -27,27 +27,29 @@ import javax.annotation.Nonnull;
 public class SensorSearchChest extends SensorBase {
     protected final PositionProvider positionProvider = new PositionProvider();
     protected final int slot;
+    protected final  int slot2;
 
     public SensorSearchChest(@Nonnull BuilderSensorSearchChest builder, @Nonnull BuilderSupport support) {
         super(builder);
         this.slot = support.getTargetSlot("ChestPos");
+        this.slot2 = support.getTargetSlot("OriginPos");
     }
 
     public boolean matches(@Nonnull Ref<EntityStore> ref, @Nonnull Role role, double dt, @Nonnull Store<EntityStore> store) {
-        ServantMod.LOGGER.atInfo().log("Match");
         if (!super.matches(ref, role, dt, store)) {
             this.positionProvider.clear();
             return false;
         } else {
-            ServantMod.LOGGER.atInfo().log("primer test pasado");
             RecollectComponent chestComponent = store.getComponent(ref, ServantMod.RECOLLECT_COMPONENT);
             assert chestComponent != null;
 
             Vector3i pos = chestComponent.targetPos;
-            ServantMod.LOGGER.atInfo().log("chestComponent existe : %s",chestComponent);
 
             if (pos!=null){
-                ServantMod.LOGGER.atInfo().log("LO %s",pos);
+                RecollectComponent recollectComponent = store.getComponent(ref, ServantMod.RECOLLECT_COMPONENT);
+                if (recollectComponent!=null){
+                    role.getMarkedEntitySupport().getStoredPosition(slot2).assign(recollectComponent.originPos);
+                }
                 this.positionProvider.setTarget(pos.toVector3d());
 
                 role.getMarkedEntitySupport().getStoredPosition(slot).assign(pos.x,pos.y,pos.z);

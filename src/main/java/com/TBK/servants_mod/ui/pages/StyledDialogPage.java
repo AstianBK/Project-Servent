@@ -91,11 +91,7 @@ public class StyledDialogPage extends InteractiveCustomUIPage<StyledDialogPage.D
         commandBuilder.set("#Headline.Text", headline);
         commandBuilder.set("#Message.Text", message);
 
-        // Bind button click events
-        // CustomUIEventBindingType.Activating = "when this element is clicked"
-        // The selector "#ActionButton" finds the button with that ID
-        //
-        // When clicked, handleDataEvent() will be called with an empty DialogEventData
+
         eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#ActionButton");
         eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#CloseButton");
     }

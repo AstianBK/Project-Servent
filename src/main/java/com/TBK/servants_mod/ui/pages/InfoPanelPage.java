@@ -1,6 +1,11 @@
 package com.TBK.servants_mod.ui.pages;
 
 
+import com.TBK.servants_mod.ServantMod;
+import com.TBK.servants_mod.ServantUtil;
+import com.TBK.servants_mod.resource.GrowTreeManager;
+import com.hypixel.hytale.codec.Codec;
+import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -9,10 +14,17 @@ import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.protocol.packets.interface_.Page;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
+import com.hypixel.hytale.server.core.inventory.Inventory;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import org.bson.BsonDocument;
+import org.bson.types.Code;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -36,8 +48,16 @@ public class InfoPanelPage extends InteractiveCustomUIPage<InfoPanelPage.InfoEve
      * Empty EventData - we only need to handle the close button.
      */
     public static class InfoEventData {
+        private String key;
+
         public static final BuilderCodec<InfoEventData> CODEC =
-                BuilderCodec.builder(InfoEventData.class, InfoEventData::new).build();
+                BuilderCodec.builder(InfoEventData.class, InfoEventData::new).versioned().codecVersion(1)
+                        .append(
+                                new KeyedCodec<>("Key", Codec.STRING),
+                                (event, value) -> event.key = value,
+                                event -> event.key
+                        )
+                        .add().build();
     }
 
     /**
@@ -56,12 +76,7 @@ public class InfoPanelPage extends InteractiveCustomUIPage<InfoPanelPage.InfoEve
     }
 
     @Override
-    public void build(
-            @Nonnull Ref<EntityStore> ref,
-            @Nonnull UICommandBuilder commandBuilder,
-            @Nonnull UIEventBuilder eventBuilder,
-            @Nonnull Store<EntityStore> store
-    ) {
+    public void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder commandBuilder, @Nonnull UIEventBuilder eventBuilder, @Nonnull Store<EntityStore> store) {
         // Load the UI layout
         commandBuilder.append("Pages/InfoPanel.ui");
 
@@ -73,17 +88,44 @@ public class InfoPanelPage extends InteractiveCustomUIPage<InfoPanelPage.InfoEve
         commandBuilder.set("#Stat3Value.Text", uptime);  // Already a string
 
         // Bind close button
-        eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#CloseButton");
+        eventBuilder.addEventBinding(CustomUIEventBindingType.KeyDown, "#CloseButton",new EventData().append("Key","#Key"));
     }
 
     @Override
-    public void handleDataEvent(
-            @Nonnull Ref<EntityStore> ref,
-            @Nonnull Store<EntityStore> store,
-            @Nonnull InfoEventData data
-    ) {
-        // Close the page
+    public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, @Nonnull InfoEventData data) {
         Player player = (Player) store.getComponent(ref, Player.getComponentType());
-        player.getPageManager().setPage(ref, store, Page.None);
+
+        if (data.key != null) {
+            ServantMod.LOGGER.atInfo().log("Key : %s",data.key);
+
+        }
+//        if (data.action == null) return;
+//
+//        switch (data.action) {
+//            case "toggle_item":
+//                toggleItemState(player,ref, store);
+//                break;
+//
+//            case "close":
+//                player.getPageManager().setPage(ref, store, Page.None);
+//                break;
+//        }
     }
+
+    private void toggleItemState(Player player,Ref<EntityStore> ref, Store<EntityStore> store) {
+        Inventory inv = player.getInventory();
+        if (inv == null) return;
+
+        ItemStack stack = inv.getItemInHand();
+        if (stack == null) return;
+
+        BsonDocument meta = stack.getMetadata();
+        if (meta == null) meta = new BsonDocument();
+
+        boolean current = meta.containsKey("active") && meta.getBoolean("active").getValue();
+
+        meta.put("active", Codec.BOOLEAN.encode(!current));
+
+    }
+
 }

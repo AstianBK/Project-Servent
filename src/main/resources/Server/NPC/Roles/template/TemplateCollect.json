@@ -12,7 +12,11 @@
   },
   "MotionControllerList": [
     {
-      "Type": "Walk"
+      "Type": "Walk",
+      "MaxWalkSpeed": 3,
+      "Gravity": 10,
+      "MaxFallSpeed": 8,
+      "Acceleration": 10
     }
   ],
   "Instructions": [
@@ -24,16 +28,9 @@
       "Instructions": [
         {
           "Sensor": {
-            "Type": "Self",
-            "Filters" : [
-              
-            ]
+            "Type": "Any"
           },
           "Actions": [
-            {
-              "Type": "State",
-              "State": "Collect"
-            },
             {
               "Type": "StorePosition",
               "Slot": "ChestPos"
@@ -41,6 +38,10 @@
             {
               "Type": "StorePosition",
               "Slot": "OriginPos"
+            },
+            {
+              "Type": "State",
+              "State": "Collect"
             }
           ]
         }
@@ -54,22 +55,45 @@
       },
       "Instructions": [
         {
+          "Reference": "Component_Instruction_Clear_Status_Animation"
+        },
+        {
           "Sensor": {
-            "Type": "And",
-            "Sensors": [
+            "Type": "SearchChest",
+            "Range": 50,
+            "TargetSlot": "ChestPos"
+          },
+          "Actions": [
+            {
+              "Type": "StorePosition",
+              "Slot": "ChestPos"
+            }
+          ],
+          "Continue": true
+        },
+        {
+          "Sensor": {
+            "Type": "Self",
+            "Filters": [
               {
-                "Type": "Self",
-                "Filters": [
-                  {
-                    "Type": "Inventory",
-                    "CountRange": [300, 300]
-                  }
-                ]
-              },
-              {
-                "Type": "SearchChest"
+                "Type": "Inventory",
+                "CountRange": [3, 999],
+                "FreeSlotRange": [0, 0]
               }
             ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "ToChest"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "DroppedItem",
+            "Range": 50,
+            "Items": ["*"]
           },
           "Actions": [
             {
@@ -77,53 +101,27 @@
               "Blocking": true,
               "Actions": [
                 {
-                  "Type": "State",
-                  "State": "ToChest"
+                  "Type": "Timeout",
+                  "Delay": [0.25, 0.25],
+                  "DelayAfter": true,
+                  "Action": {
+                    "Type": "PlayAnimation",
+                    "Slot": "Status",
+                    "Animation": "Pick"
+                  }
                 },
                 {
-                  "Type": "DisplayName",
-                  "DisplayName": "To Chest"
+                  "Type": "PickUpItem",
+                  "Items": ["*"],
+                  "Delay": [0.1, 0.1],
+                  "StorageTarget": "Inventory"
                 }
               ]
-            }
-          ]
-        },
-        {
-          "Sensor": {
-            "Type": "And",
-            "Sensors": [
-              {
-                "Type": "DroppedItem",
-                "Range": 10,
-                "Items": ["*"],
-                "ViewSector": 120
-              },
-              {
-                "Type": "Not",
-                "Sensor": {
-                  "Type": "Self",
-                  "Filters": [
-                    {
-                      "Type": "Inventory",
-                      "CountRange": [300, 300],
-                      "FreeSlotRange": [0, 0]
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "Actions": [
-            {
-              "Type": "PickUpItem",
-              "Items": ["*"],
-              "Delay": [2, 2],
-              "StorageTarget": "Inventory"
             }
           ],
           "BodyMotion": {
             "Type": "Seek",
-            "StopDistance": 0.5
+            "StopDistance": 0.1
           },
           "Continue": true
         }
@@ -140,42 +138,38 @@
           "Sensor": {
             "Type": "ReadPosition",
             "Slot": "ChestPos",
-            "Range": 2
-          },
-          "Actions": [
-            {
-              "Type": "State",
-              "State": "AddInventory"
-            }
-          ],
-          "BodyMotion": {
-            "Type": "Seek",
-            "StopDistance": 0.5
-          }
-        },
-        {
-          "Sensor": {
-            "Type": "ReadPosition",
-            "Slot": "ChestPos",
             "Range": 150
           },
           "Actions": [
             {
-              "Type": "DisplayName",
-              "DisplayName": "Yendo al cofre"
+              "Type": "Sequence",
+              "Blocking": true,
+              "Actions": [
+                {
+                  "Type": "ActionTeleportToSlot",
+                  "TargetSlot": "ChestPos"
+                },
+                {
+                  "Type": "ResetPath"
+                },
+                {
+                  "Type": "ResetInstructions"
+                }
+              ]
+            },
+            {
+              "Type": "State",
+              "State": "Deposit"
             }
-          ],
-          "BodyMotion": {
-            "Type": "Seek",
-            "StopDistance": 0.5
-          }
+          ]
         }
-      ]
+      ],
+      "Name": "ToChest"
     },
     {
       "Sensor": {
         "Type": "State",
-        "State": "AddInventory"
+        "State": "Deposit"
       },
       "Instructions": [
         {
@@ -184,19 +178,70 @@
           },
           "Actions": [
             {
-              "Type": "DisplayName",
-              "DisplayName": "Guardando...."
+              "Type": "Sequence",
+              "Blocking": true,
+              "Actions": [
+                {
+                  "Type": "Timeout",
+                  "Delay": [0.25, 0.25],
+                  "DelayAfter": true,
+                  "Action": {
+                    "Type": "PlayAnimation",
+                    "Slot": "Status",
+                    "Animation": "Chop"
+                  }
+                },
+                {
+                  "Type": "AddItemsToInventory"
+                },
+                {
+                  "Type": "State",
+                  "State": "Return"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "Name": "Deposit"
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Return"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "ReadPosition",
+            "Slot": "OriginPos",
+            "Range": 150
+          },
+          "Actions": [
+            {
+              "Type": "Sequence",
+              "Blocking": true,
+              "Actions": [
+                {
+                  "Type": "ActionTeleportToSlot",
+                  "TargetSlot": "OriginPos"
+                },
+                {
+                  "Type": "ResetPath"
+                },
+                {
+                  "Type": "ResetInstructions"
+                }
+              ]
             },
             {
               "Type": "State",
               "State": "Collect"
-            },
-            {
-              "Type": "AddItemsToInventory"
             }
           ]
         }
-      ]
+      ],
+      "Name": "Return"
     }
   ],
   "Parameters": {

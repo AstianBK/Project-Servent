@@ -6,6 +6,15 @@
     "Compute": "MaxHealth"
   },
   "NameTranslationKey": "server.npcRoles.Marker.name",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 10,
+      "Gravity": 1,
+      "MaxFallSpeed": 1,
+      "Acceleration": 10
+    }
+  ],
   "Instructions": [
     {
       "Instructions": [
@@ -25,7 +34,7 @@
                   "Message": "MineRequest",
                   "Range": 15,
                   "TargetGroups": ["Servenant"],
-                  "ExpirationTime": 10,
+                  "ExpirationTime": 999,
                   "SendCount": 5,
                   "TargetToSendSlot": "MineCenter"
                 },
@@ -41,21 +50,7 @@
           "Sensor": {
             "Type": "State",
             "State": "Wait"
-          },
-          "Instructions": [
-            {
-              "Sensor": {
-                "Type": "Timer",
-                "Name": "SelfDestruct",
-                "Time": 3
-              },
-              "Actions": [
-                {
-                  "Type": "Despawn"
-                }
-              ]
-            }
-          ]
+          }
         }
       ]
     }

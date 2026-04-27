@@ -1,0 +1,31 @@
+{
+  "Model": "Items/commandgauntlet.blockymodel",
+  "Texture": "Items/commandgauntlet.png",
+  "Icon": "Icons/ItemsGenerated/contract_item.png",
+  "PlayerAnimationsId": "Gauntlet",
+  "TranslationProperties": {
+    "Name": "server.items.contractItem.name",
+    "Description": "server.items.contractItem.description"
+  },
+  "Quality": "Common",
+  "ItemLevel": 40,
+  "Weapon": {},
+  "ItemSoundSetId": "ISS_Weapons_Books",
+
+  "Interactions": {
+    "Primary": {
+      "Interactions": [
+        {
+          "Type": "SummonLumberJack"
+        }
+      ]
+    },
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "ModifyArea"
+        }
+      ]
+    }
+  }
+}

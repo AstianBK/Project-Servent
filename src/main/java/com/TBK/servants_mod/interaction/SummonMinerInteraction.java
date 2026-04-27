@@ -110,7 +110,7 @@ public class SummonMinerInteraction extends SimpleInstantInteraction{
                 ArrayList<String> uuids = new ArrayList<>();
                 for (int i = 0 ; i < 5 ; i++){
                     CompletableFuture.runAsync(()->{
-                        Entity entity = (Entity) NPCPlugin.get().spawnNPC(store,"ServantMiner",null,posOrigin, Vector3f.NaN).right();
+                        Entity entity = (Entity) NPCPlugin.get().spawnNPC(store,"ServantMiner",null,posOrigin,new Vector3f(90,0)).right();
                         uuids.add(entity.getUuid().toString());
                         },world);
                 }

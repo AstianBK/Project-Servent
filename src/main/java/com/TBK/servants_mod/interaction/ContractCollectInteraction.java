@@ -16,6 +16,7 @@ import com.hypixel.hytale.protocol.BlockParticleEvent;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.InteractionState;
 import com.hypixel.hytale.protocol.InteractionType;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.entity.entities.BlockEntity;
@@ -69,11 +70,6 @@ public class ContractCollectInteraction extends SimpleInstantInteraction {
             meta = new BsonDocument();
         }
         if(meta.containsKey("HasChest")){
-            int x = meta.getInt32("ChestX").getValue();
-            int y = meta.getInt32("ChestY").getValue();
-            int z = meta.getInt32("ChestZ").getValue();
-
-
             if(meta.containsKey("Summoning")){
                 if (meta.getBoolean("Summoning").getValue()){
                     summoning = true;
@@ -92,6 +88,7 @@ public class ContractCollectInteraction extends SimpleInstantInteraction {
             meta.put("ChestY",Codec.INTEGER.encode(pos.y));
             meta.put("ChestZ",Codec.INTEGER.encode(pos.z));
             meta.put("HasChest",Codec.BOOLEAN.encode(true));
+            player.sendMessage(Message.raw("Chest Select :"+pos));
         }
         if (summoning){
             BsonDocument finalMeta = meta;
@@ -100,10 +97,11 @@ public class ContractCollectInteraction extends SimpleInstantInteraction {
                     int x = finalMeta.getInt32("ChestX").getValue();
                     int y = finalMeta.getInt32("ChestY").getValue();
                     int z = finalMeta.getInt32("ChestZ").getValue();
-                    Pair<Ref<EntityStore>, INonPlayerCharacter> pair = NPCPlugin.get().spawnNPC(store,"ServantCollect",null,new Vector3d(pos.x,pos.y+1.5D,pos.z), Vector3f.NaN);
+                    Pair<Ref<EntityStore>, INonPlayerCharacter> pair = NPCPlugin.get().spawnNPC(store,"ServantCollect",null,new Vector3d(pos.x,pos.y+1.5D,pos.z),new Vector3f(90,0));
 
                     RecollectComponent component = new RecollectComponent();
                     component.targetPos = new Vector3i(x,y,z);
+                    component.originPos = new Vector3i(pos.x,pos.y+1,pos.z);
                     Ref<EntityStore> ref1 = pair.first();
                     store.addComponent(ref1,ServantMod.RECOLLECT_COMPONENT,component);
                 }
