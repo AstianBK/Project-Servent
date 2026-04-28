@@ -92,7 +92,7 @@
         {
           "Sensor": {
             "Type": "DroppedItem",
-            "Range": 1,
+            "Range": 0.2,
             "Items": ["*"]
           },
           "Actions": [
@@ -108,6 +108,13 @@
             "Range": 50,
             "Items": ["*"]
           },
+          "Actions": [
+            {
+              "Type": "PlayAnimation",
+              "Slot": "Status",
+              "Animation": "Walk"
+            }
+          ],
           "BodyMotion": {
             "Type": "Seek",
             "StopDistance": 0.1
@@ -129,7 +136,7 @@
         {
           "Sensor": {
             "Type": "DroppedItem",
-            "Range": 2,
+            "Range": 0.2,
             "Items": ["*"]
           },
           "Actions": [
@@ -155,7 +162,11 @@
                 }
               ]
             }
-          ]
+          ],
+          "BodyMotion": {
+            "Type": "Seek",
+            "StopDistance": 0.1
+          }
         },
         {
           "Sensor": {
@@ -226,7 +237,7 @@
               "Actions": [
                 {
                   "Type": "Timeout",
-                  "Delay": [1, 1.25],
+                  "Delay": [5, 10.25],
                   "DelayAfter": true,
                   "Action": {
                     "Type": "PlayAnimation",

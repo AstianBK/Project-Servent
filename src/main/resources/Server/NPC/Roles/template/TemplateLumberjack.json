@@ -261,7 +261,12 @@
                 }
               ]
             }
-          ]
+          ],
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "Continue": true
         },
         {
           "Sensor": {

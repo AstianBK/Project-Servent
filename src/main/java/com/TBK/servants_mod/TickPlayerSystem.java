@@ -46,11 +46,13 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
         ItemStack stack = player.getInventory().getItemInHand();
         PacketHandler connection = player.getPlayerConnection();
 
+        if (connection == null) return;
 
         if (stack == null || !stack.getItemId().equals("Gauntlet")){
             connection.write(new ClearDebugShapes());
             return;
         }
+
         if (stack.getMetadata()!=null){
             if (stack.getMetadata().containsKey("debug")){
                 stack.getMetadata().put("debug",Codec.BOOLEAN.encode(false));
@@ -77,7 +79,6 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
                 }
                 default -> {
                     connection.write(new ClearDebugShapes());
-
                 }
             }
 

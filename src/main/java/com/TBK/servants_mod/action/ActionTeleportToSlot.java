@@ -11,12 +11,15 @@ import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.protocol.BlockParticleEvent;
+import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.modules.collision.CollisionModule;
 import com.hypixel.hytale.server.core.modules.collision.CollisionResult;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.modules.physics.component.Velocity;
+import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -85,7 +88,9 @@ public class ActionTeleportToSlot extends ActionBase {
             Velocity velocity = store.getComponent(ref,Velocity.getComponentType());
             velocity.setZero();
             velocity.setClient(0.0F,0.0F,0.0F);
-
+            SoundUtil.playSoundEvent3d(SoundEvent.getAssetMap().getIndex("SFX_Staff_Flame_Flamethrower_End"), SoundCategory.Ambient,current.x + 0.5, current.y + 1.5, current.z + 0.5,(r)->{
+                return true;
+            },store);
             store.addComponent(ref, Teleport.getComponentType(), Teleport.createExact(pos, rotation,rotation));
 
             return true;

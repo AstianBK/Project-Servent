@@ -15,13 +15,18 @@ import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.BlockParticleEvent;
 import com.hypixel.hytale.protocol.BlockPosition;
+import com.hypixel.hytale.protocol.SoundCategory;
+import com.hypixel.hytale.server.core.asset.AssetModule;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.Rotation;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.RotationTuple;
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
+import com.hypixel.hytale.server.core.asset.type.soundset.config.SoundSet;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.collision.CollisionModule;
 import com.hypixel.hytale.server.core.modules.collision.CollisionResult;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
+import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -185,6 +190,10 @@ public class SensorMiner extends SensorBase {
                     world.getChunk(ChunkUtil.indexChunkFromBlock(bx, bz)).setBlock(bx, by, bz, blockId, BlockType.getAssetMap().getAsset(blockId), RotationTuple.index(yaw, Rotation.None, Rotation.None), 0, 0);
 
                     world.getNotificationHandler().sendBlockParticle(bx + 0.5, by + 1.5, bz + 0.5, BlockType.getBlockIdOrUnknown("Rock_Crystal_Red_Block"," "), BlockParticleEvent.Break);
+
+                    SoundUtil.playSoundEvent3d(SoundEvent.getAssetMap().getIndex("SFX_Fireball_Death"), SoundCategory.Ambient,bx + 0.5, by + 1.5, bz + 0.5,(r)->{
+                        return true;
+                    },store);
                 }
                 if (minerComponent.heightForSlab>0){
                     minerComponent.heightForSlab--;

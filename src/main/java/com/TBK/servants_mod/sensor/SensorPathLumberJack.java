@@ -100,7 +100,7 @@ public class SensorPathLumberJack extends SensorBase {
         if (first != null && first.getMaterial() == BlockMaterial.Solid){
             BlockType type = world.getBlockType(new Vector3i(pos.x,pos.y+1,pos.z));
 
-            return type==null || type.getId().equals("Empty");
+            return type==null || type.getId().equals("Empty") || type.getMaterial() == BlockMaterial.Empty;
         }
         BlockType above = world.getBlockType(pos.x,pos.y-1,pos.z);
         return above!=null && above.getMaterial()==BlockMaterial.Solid;
