@@ -16,6 +16,7 @@ import com.hypixel.hytale.protocol.BlockParticleEvent;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.InteractionState;
 import com.hypixel.hytale.protocol.InteractionType;
+import com.hypixel.hytale.protocol.packets.player.ClearDebugShapes;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.Entity;
@@ -242,12 +243,13 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
                 meta.put("ChestZ",Codec.INTEGER.encode(pos.z));
                 meta.put("HasChest",Codec.BOOLEAN.encode(true));
                 player.sendMessage(Message.raw("Chest Selected!").color(Color.GREEN));
+                player.getPlayerConnection().write(new ClearDebugShapes());
             }
-
             CompletableFuture.runAsync(()->{
                 stackData.put("Collect",Codec.BSON_DOCUMENT.encode(meta));
                 player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
             },world);
+
         }else {
             if(meta.containsKey("HasChest")){
                 if(meta.containsKey("Summoning")){

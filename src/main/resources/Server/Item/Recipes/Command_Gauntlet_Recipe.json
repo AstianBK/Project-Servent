@@ -1,0 +1,40 @@
+{
+  "Input": [
+    {
+      "ItemId": "Ingredient_Bar_Iron",
+      "Quantity": 5
+    },
+    {
+      "ItemId": "Ingredient_Bar_Adamantite",
+      "Quantity": 15
+    },
+    {
+      "ItemId": "Ingredient_Bar_Gold",
+      "Quantity": 10
+    },
+    {
+      "ItemId": "Ingredient_Fire_Essence",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Crystal_Red",
+      "Quantity": 15
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Gauntlet",
+    "Quantity": 1
+  },
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Arcanebench",
+      "RequiredTierLevel": 0,
+      "Categories": [
+        "Arcane_Misc"
+      ]
+    }
+  ],
+  "TimeSeconds": 10,
+  "KnowledgeRequired": false
+}

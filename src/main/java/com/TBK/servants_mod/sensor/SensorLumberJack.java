@@ -30,6 +30,7 @@ import com.hypixel.hytale.server.npc.sensorinfo.PositionProvider;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class SensorLumberJack extends SensorBase {
     protected final double range;
@@ -102,7 +103,6 @@ public class SensorLumberJack extends SensorBase {
 
 
         for (TreeData tree : zone.trees) {
-
             Vector3i base = tree.center;
             ResourceView resourceView = (ResourceView) blackboard.getView(
                     ResourceView.class,
@@ -119,9 +119,11 @@ public class SensorLumberJack extends SensorBase {
         }
 
         if (best == null) {
+            CompletableFuture.runAsync(npc::remove,world);
             this.positionProvider.clear();
             return false;
         }
+
         ResourceView resourceView = (ResourceView) blackboard.getView(ResourceView.class, ResourceView.indexViewFromWorldPosition(best.toVector3d()));
 
         if (resourceView != null) {

@@ -82,7 +82,8 @@ public class MinerAction extends ActionBase {
             }else{
                 int newSize = Math.max(sectionComponent.targetPos.length-1,0);
                 if(newSize>0){
-                    List<Vector3i> nextPositions =new ArrayList<>();
+                    List<Vector3i> nextPositions = new ArrayList<>();
+
                     for (int i = 0 ; i < sectionComponent.targetPos.length ; i++){
                         Vector3i vector3i = sectionComponent.targetPos[i];
                         if(vector3i==null)continue;
@@ -90,6 +91,7 @@ public class MinerAction extends ActionBase {
                             nextPositions.add(vector3i);
                         }
                     }
+
                     if (newSize>1){
                         Vector3i[] newVectorTarget = new Vector3i[newSize];
                         int i = 0;

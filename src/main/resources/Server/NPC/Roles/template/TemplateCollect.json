@@ -77,8 +77,8 @@
             "Filters": [
               {
                 "Type": "Inventory",
-                "CountRange": [3, 999],
-                "FreeSlotRange": [0, 0]
+                "CountRange": [1, 999],
+                "FreeSlotRange": [0, 100]
               }
             ]
           },
@@ -146,7 +146,7 @@
               "Actions": [
                 {
                   "Type": "Timeout",
-                  "Delay": [0.25, 0.25],
+                  "Delay": [1, 1],
                   "DelayAfter": true,
                   "Action": {
                     "Type": "PlayAnimation",
@@ -202,12 +202,6 @@
                 {
                   "Type": "ActionTeleportToSlot",
                   "TargetSlot": "ChestPos"
-                },
-                {
-                  "Type": "ResetPath"
-                },
-                {
-                  "Type": "ResetInstructions"
                 }
               ]
             },
@@ -237,13 +231,7 @@
               "Actions": [
                 {
                   "Type": "Timeout",
-                  "Delay": [5, 10.25],
-                  "DelayAfter": true,
-                  "Action": {
-                    "Type": "PlayAnimation",
-                    "Slot": "Status",
-                    "Animation": "Deposit"
-                  }
+                  "Delay": [5, 10.25]
                 },
                 {
                   "Type": "AddItemsToInventory"
@@ -279,12 +267,6 @@
                 {
                   "Type": "ActionTeleportToSlot",
                   "TargetSlot": "OriginPos"
-                },
-                {
-                  "Type": "ResetPath"
-                },
-                {
-                  "Type": "ResetInstructions"
                 }
               ]
             },

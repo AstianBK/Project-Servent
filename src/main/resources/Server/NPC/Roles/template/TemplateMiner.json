@@ -122,7 +122,7 @@
               "Actions": [
                 {
                   "Type": "Timeout",
-                  "Delay": [0.25, 0.25],
+                  "Delay": [1, 1.2],
                   "DelayAfter": true,
                   "Action": {
                     "Type": "PlayAnimation",
@@ -214,10 +214,6 @@
               "Type": "SpawnParticles",
               "Offset": [0, 2.1, 0],
               "ParticleSystem": "Alerted"
-            },
-            {
-              "Type": "DisplayName",
-              "DisplayName": "TP"
             }
           ]
         }
@@ -231,7 +227,7 @@
       "Description": "Model to be used"
     },
     "Weapons": {
-      "Value": ["Tool_Pickaxe_Scrap"],
+      "Value": ["Tool_Pickaxe_Iron"],
       "Weapons": "Weapon in Hand"
     },
     "MineBlockSet": {

@@ -10,6 +10,7 @@ import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.protocol.packets.interface_.Page;
 import com.hypixel.hytale.protocol.packets.player.ClearDebugShapes;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
@@ -21,6 +22,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.bson.BsonDocument;
 
 import javax.annotation.Nonnull;
+import java.awt.*;
 
 /**
  * SelectServantPage - A dialog with buttons that can be clicked.
@@ -97,6 +99,11 @@ public class SelectServantPage extends InteractiveCustomUIPage<SelectServantPage
             }
         }
 
+        String name = data.key;
+        if (name.equals("Collect")){
+            name = "Gatherer";
+        }
+        player.sendMessage(Message.raw("Imp " +name +" Selected!").color(Color.YELLOW));
 
 
         ServantUtil.setGauntletType(meta, data.key);

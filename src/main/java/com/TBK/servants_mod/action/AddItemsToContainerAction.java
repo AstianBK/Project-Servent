@@ -37,13 +37,20 @@ public class AddItemsToContainerAction extends ActionBase {
         for (ComponentType<EntityStore, ? extends InventoryComponent> componentType : InventoryComponent.HOTBAR_UTILITY_CONSUMABLE_STORAGE){
             InventoryComponent inventory = store.getComponent(ref,componentType);
             for (int i= 0; i<inventory.getInventory().getCapacity() ;i++){
-                stackList.add(inventory.getInventory().getItemStack((short) i));
+                if (inventory.getInventory().getItemStack((short) i)!=null){
+                    ItemStack stack = inventory.getInventory().getItemStack((short) i);
+                    stackList.add(stack);
+                }
             }
-            inventory.getInventory().removeAllItemStacks();
         }
 
         if (container.canAddItemStacks(stackList)){
             container.addItemStacks(stackList);
+        }
+
+        for (ComponentType<EntityStore, ? extends InventoryComponent> componentType : InventoryComponent.HOTBAR_UTILITY_CONSUMABLE_STORAGE){
+            InventoryComponent inventory = store.getComponent(ref,componentType);
+            inventory.getInventory().removeAllItemStacks();
         }
 
         return super.execute(ref, role, sensorInfo, dt, store);
