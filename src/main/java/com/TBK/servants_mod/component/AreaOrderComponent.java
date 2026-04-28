@@ -25,7 +25,7 @@ public class AreaOrderComponent implements Component<EntityStore> {
     public float width;
 
     public AreaOrderComponent() {
-        this.width = 7.0f; // default
+        this.width = 9.0f; // default
     }
 
     @Override

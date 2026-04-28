@@ -2,6 +2,6 @@
   "Type": "Simple",
   "Effects": {
     "ItemAnimationId": "OrderServant",
-    "WorldSoundEventId": "SFX_Skeleton_Mage_Spellbook_Charge"
+    "WorldSoundEventId": "SFX_Staff_Flame_Fireball_Impact"
   }
 }
