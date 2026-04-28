@@ -10,7 +10,6 @@
   "NameTranslationKey": {
     "Compute": "NameTranslationKey"
   },
-  "Debug": "DisplayState",
   "MotionControllerList": [
     {
       "Type": "Walk",
@@ -27,9 +26,6 @@
         "State": "Idle"
       },
       "Instructions": [
-        {
-          "Reference": "Component_Instruction_Clear_Status_Animation"
-        },
         {
           "Sensor": {
             "Type": "Any"
@@ -97,9 +93,6 @@
           "Continue": true
         },
         {
-          "Reference": "Component_Instruction_Clear_Status_Animation"
-        },
-        {
           "Sensor": {
             "Type": "SearchLumberJack",
             "Range": 50,
@@ -132,6 +125,9 @@
       },
       "Instructions": [
         {
+          "Reference": "Component_Instruction_Clear_Status_Animation"
+        },
+        {
           "Sensor": {
             "Type": "Any"
           },
@@ -143,6 +139,11 @@
               "Item": {
                 "Compute": "Weapons"
               }
+            },
+            {
+              "Type": "PlayAnimation",
+              "Slot": "Status",
+              "Animation": "Walk"
             }
           ],
           "Continue": true
@@ -182,25 +183,6 @@
             }
           },
           "Continue": true
-        },
-        {
-          "Sensor": {
-            "Type": "Not",
-            "Sensor": {
-              "Type": "Eval",
-              "Expression": "blocked"
-            }
-          },
-          "Actions": [
-            {
-              "Type": "DisplayName",
-              "DisplayName": "No Blocked"
-            }
-          ],
-          "Continue": true
-        },
-        {
-          "Reference": "Component_Instruction_Clear_Status_Animation"
         },
         {
           "Sensor": {
@@ -304,10 +286,6 @@
               "Type": "SpawnParticles",
               "Offset": [0, 2.1, 0],
               "ParticleSystem": "Alerted"
-            },
-            {
-              "Type": "DisplayName",
-              "DisplayName": "TP"
             }
           ]
         }

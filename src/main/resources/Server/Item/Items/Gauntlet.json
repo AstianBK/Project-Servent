@@ -1,12 +1,14 @@
 {
   "Model": "Items/commandgauntlet.blockymodel",
   "Texture": "Items/commandgauntlet.png",
-  "Icon": "Icons/ItemsGenerated/contract_item.png",
+  "Icon": "Icons/ItemsGenerated/command_gauntlet.png",
   "PlayerAnimationsId": "Gauntlet",
+
   "TranslationProperties": {
     "Name": "server.items.contractItem.name",
     "Description": "server.items.contractItem.description"
   },
+
   "Quality": "Common",
   "ItemLevel": 40,
   "Weapon": {},
@@ -16,14 +18,14 @@
     "Primary": {
       "Interactions": [
         {
-          "Type": "SummonLumberJack"
+          "Type": "GauntletInteraction"
         }
       ]
     },
     "Secondary": {
       "Interactions": [
         {
-          "Type": "ModifyArea"
+          "Type": "OpenSelectServant"
         }
       ]
     }

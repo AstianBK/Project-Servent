@@ -5,14 +5,10 @@ import com.TBK.servants_mod.action.BuilderAddItemsToContainerAction;
 import com.TBK.servants_mod.action.BuilderMinerAction;
 import com.TBK.servants_mod.action.BuilderStoreBeaconPosition;
 import com.TBK.servants_mod.component.*;
-import com.TBK.servants_mod.interaction.ContractCollectInteraction;
-import com.TBK.servants_mod.interaction.ModifyAreaMinerInteraction;
-import com.TBK.servants_mod.interaction.SummonLumberJackInteraction;
-import com.TBK.servants_mod.interaction.SummonMinerInteraction;
+import com.TBK.servants_mod.interaction.*;
 import com.TBK.servants_mod.resource.GrowTreeManager;
 import com.TBK.servants_mod.sensor.*;
-import com.TBK.servants_mod.ui.commands.InfoCommand;
-import com.hypixel.hytale.codec.Codec;
+
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.ResourceType;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -53,7 +49,6 @@ public class ServantMod extends JavaPlugin {
         MINER_COMPONENT = getEntityStoreRegistry().registerComponent(MinerComponent.class,"miner_component",MinerComponent.CODEC);
         AREA_COMPONENT = getEntityStoreRegistry().registerComponent(AreaOrderComponent.class,"area_component",AreaOrderComponent.CODEC);
         RECOLLECT_COMPONENT = getEntityStoreRegistry().registerComponent(RecollectComponent.class,"recollect_component",RecollectComponent.CODEC);
-        getCommandRegistry().registerCommand(new InfoCommand());
         this.getEntityStoreRegistry().registerSystem(new RegisterComponent());
         this.getEntityStoreRegistry().registerSystem(new TickPlayerSystem());
         this.getEntityStoreRegistry().registerSystem(new TickServantCollect());
@@ -67,7 +62,9 @@ public class ServantMod extends JavaPlugin {
 
     @Override
     protected void setup() {
-        this.getCodecRegistry(Interaction.CODEC).register("SummonLumberJack", SummonLumberJackInteraction.class,SummonLumberJackInteraction.CODEC);
+        this.getCodecRegistry(Interaction.CODEC).register("GauntletInteraction", GauntletServantInteraction.class,GauntletServantInteraction.CODEC);
+
+        this.getCodecRegistry(Interaction.CODEC).register("OpenSelectServant", OpenOrdenMenu.class,OpenOrdenMenu.CODEC);
 
         this.getCodecRegistry(Interaction.CODEC).register("SummonMiner", SummonMinerInteraction.class,SummonMinerInteraction.CODEC);
         this.getCodecRegistry(Interaction.CODEC).register("ModifyArea", ModifyAreaMinerInteraction.class,ModifyAreaMinerInteraction.CODEC);

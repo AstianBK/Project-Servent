@@ -59,6 +59,13 @@
           "Animation": "NPC/Servant/animations/gatherer.pick.blockyanim"
         }
       ]
+    },
+    "Deposit": {
+      "Animations": [
+        {
+          "Animation": "NPC/Servant/animations/gatherer.store.blockyanim"
+        }
+      ]
     }
   }
 }

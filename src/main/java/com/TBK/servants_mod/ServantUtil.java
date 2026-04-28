@@ -1,6 +1,7 @@
 package com.TBK.servants_mod;
 
 import com.TBK.servants_mod.data.TreeData;
+import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
@@ -13,6 +14,7 @@ import com.hypixel.hytale.server.core.universe.world.chunk.BlockComponentChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.npc.blackboard.view.resource.ResourceView;
+import org.bson.BsonDocument;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -20,6 +22,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ServantUtil {
+    public static void setGauntletType(BsonDocument meta,String type){
+        if(meta.containsKey("GauntletType")){
+            meta.put("GauntletType",Codec.STRING.encode(type));
+        }else {
+            meta.append("GauntletType", Codec.STRING.encode(type));
+        }
+    }
+    public static BsonDocument getGauntletTypeData(BsonDocument meta,String type){
+        if (meta.containsKey(type)){
+            return meta.getDocument(type);
+        }
+        return null;
+    }
+    public static String getGauntletType(BsonDocument meta){
+        if(meta.containsKey("GauntletType")){
+            return meta.getString("GauntletType").getValue();
+        }
+        return null;
+    }
     public static SimpleItemContainer getContainer(int x, int y, int z, World world){
         int chunkX = ChunkUtil.chunkCoordinate(x);
         int chunkZ = ChunkUtil.chunkCoordinate(z);
@@ -166,7 +187,7 @@ public class ServantUtil {
         if (isDirt(world, x-1,y,z+1)) dirt++;
         if (isDirt(world, x+1,y,z-1)) dirt++;
 
-        return t!=null && (t.getId().contains("Wood") || t.getId().contains("Soil") || t.getId().contains("Grass")) && dirt >3;
+        return t!=null && (t.getId().contains("Wood") || t.getId().contains("Soil") || t.getId().contains("Grass")) && dirt > 1;
     }
 
     private static boolean isDirt(World world, int x ,int y, int z) {
@@ -178,7 +199,7 @@ public class ServantUtil {
 
     public static boolean isAir(World world, int x, int y, int z) {
         BlockType t = world.getBlockType(x, y, z);
-        return t == null || t.getId().equals("Empty");
+        return t == null || (t.getId().equals("Empty") || t.getMaterial() == BlockMaterial.Empty);
     }
     public static boolean isSolid(World world, int x, int y, int z) {
         BlockType t = world.getBlockType(x, y, z);
@@ -187,7 +208,7 @@ public class ServantUtil {
 
     public static boolean isAir(WorldChunk world, int x, int y, int z) {
         BlockType t = world.getBlockType(x, y, z);
-        return t == null || t.getId().equals("Empty");
+        return t == null || (t.getId().equals("Empty") || t.getMaterial() == BlockMaterial.Empty);
     }
     public static boolean isSolid(WorldChunk world, int x, int y, int z) {
         BlockType t = world.getBlockType(x, y, z);

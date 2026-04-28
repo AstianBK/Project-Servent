@@ -3,9 +3,7 @@ package com.TBK.servants_mod.interaction;
 import com.TBK.servants_mod.ServantMod;
 import com.TBK.servants_mod.component.AreaOrderComponent;
 import com.TBK.servants_mod.component.MinerComponent;
-import com.hypixel.hytale.builtin.buildertools.PrototypePlayerBuilderToolSettings;
-import com.hypixel.hytale.builtin.buildertools.scriptedbrushes.BrushConfigCommandExecutor;
-import com.hypixel.hytale.builtin.buildertools.tooloperations.ToolOperation;
+import com.TBK.servants_mod.ui.pages.SelectServantPage;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -15,7 +13,6 @@ import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.*;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
@@ -32,12 +29,9 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import it.unimi.dsi.fastutil.Pair;
 import org.bson.BsonDocument;
 import org.bson.BsonValue;
-import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -59,13 +53,22 @@ public class SummonMinerInteraction extends SimpleInstantInteraction{
         Ref ref = interactionContext.getEntity();
         Player player = commandBuffer.getComponent(ref, Player.getComponentType());
 
+
         BsonDocument meta = player.getInventory().getItemInHand().getMetadata();
 
         AreaOrderComponent areaOrderComponent = store.getComponent(ref,ServantMod.AREA_COMPONENT);
         if (areaOrderComponent==null){
             areaOrderComponent = new AreaOrderComponent();
         }
+        ServantMod.LOGGER.atInfo().log("Interaction : %s",interactionType.name());
 
+        CompletableFuture.runAsync(
+                () -> {
+                    if (player.getPageManager().getCustomPage()==null){
+                        SelectServantPage page = new SelectServantPage(player.getPlayerRef()," "," ");
+                        player.getPageManager().openCustomPage(ref, store, page);
+                    }
+                });
 
 
         int width =(int) areaOrderComponent.width;
@@ -80,7 +83,6 @@ public class SummonMinerInteraction extends SimpleInstantInteraction{
                 summoning = true;
             }else{
                 boolean flag = meta.getBoolean("Summoning").getValue();
-                ServantMod.LOGGER.atInfo().log("Bandera :%s",flag);
                 meta.put("Summoning",Codec.BOOLEAN.encode(!flag));
                 summoning = !flag;
             }

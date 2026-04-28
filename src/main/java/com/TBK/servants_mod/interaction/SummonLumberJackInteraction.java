@@ -51,42 +51,7 @@ public class SummonLumberJackInteraction extends SimpleInstantInteraction{
 
     }
 
-    public void scanArea(World world, Vector3i center, int radius, TreeManagerComponent data,ResourceView resourceView) {
-        data.treeList.clear();
-        for (int x = center.x - radius; x <= center.x + radius; x++) {
-            for (int z = center.z - radius; z <= center.z + radius; z++) {
-                for (int y = center.y - 5; y <= center.y + 20; y++) {
-                    if (!isTreeBase(world, x, y, z)) continue;
 
-                    TreeData tree =ServantUtil.detectTree(world,resourceView,new Vector3i(x,y,z));
-
-                    data.treeList.add(tree);
-                }
-            }
-        }
-    }
-
-    private boolean isTreeBase(World world, int x, int y, int z) {
-
-        Vector3i vector3i = new Vector3i(x,y,z);
-        if (!ServantUtil.isLog(world,vector3i)) return false;
-
-        // 👇 evita raíces
-        if (!isGround(world, x,y-1,z)) return false;
-
-        // 👇 asegura que es tronco real
-        if (!ServantUtil.isLog(world, vector3i.add(0,1,0))) return false;
-
-        return true;
-    }
-
-    private boolean isGround(World world, int x, int y, int z) {
-        BlockType t = world.getBlockType(x, y, z);
-        if (t == null) return false;
-
-        String id = t.getId();
-        return id.contains("Dirt") || id.contains("Grass") || id.contains("Soil") || t.getId().contains("Wood");
-    }
     @Override
     public boolean needsRemoteSync() {
         return true;

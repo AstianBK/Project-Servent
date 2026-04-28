@@ -41,7 +41,7 @@
             },
             {
               "Type": "State",
-              "State": "Collect"
+              "State": "SearchItems"
             }
           ]
         }
@@ -51,7 +51,7 @@
     {
       "Sensor": {
         "Type": "State",
-        "State": "Collect"
+        "State": "SearchItems"
       },
       "Instructions": [
         {
@@ -92,7 +92,44 @@
         {
           "Sensor": {
             "Type": "DroppedItem",
+            "Range": 1,
+            "Items": ["*"]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Collect"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "DroppedItem",
             "Range": 50,
+            "Items": ["*"]
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "StopDistance": 0.1
+          },
+          "Continue": true
+        }
+      ],
+      "Name": "SearchItems"
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Collect"
+      },
+      "Instructions": [
+        {
+          "Reference": "Component_Instruction_Clear_Status_Animation"
+        },
+        {
+          "Sensor": {
+            "Type": "DroppedItem",
+            "Range": 2,
             "Items": ["*"]
           },
           "Actions": [
@@ -118,12 +155,18 @@
                 }
               ]
             }
-          ],
-          "BodyMotion": {
-            "Type": "Seek",
-            "StopDistance": 0.1
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Any"
           },
-          "Continue": true
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "SearchItems"
+            }
+          ]
         }
       ],
       "Name": "Collect"
@@ -183,12 +226,12 @@
               "Actions": [
                 {
                   "Type": "Timeout",
-                  "Delay": [0.25, 0.25],
+                  "Delay": [1, 1.25],
                   "DelayAfter": true,
                   "Action": {
                     "Type": "PlayAnimation",
                     "Slot": "Status",
-                    "Animation": "Chop"
+                    "Animation": "Deposit"
                   }
                 },
                 {

@@ -4,7 +4,6 @@ import com.TBK.servants_mod.ServantMod;
 import com.TBK.servants_mod.ServantUtil;
 import com.TBK.servants_mod.component.*;
 import com.TBK.servants_mod.data.TreeData;
-import com.TBK.servants_mod.ui.pages.InfoPanelPage;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -22,6 +21,7 @@ import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.entity.movement.MovementStatesComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
@@ -39,7 +39,9 @@ import org.bson.BsonDocument;
 import org.bson.BsonValue;
 import org.jspecify.annotations.NonNull;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -56,12 +58,13 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
             ServantMod.LOGGER.atInfo().log("CommandBuffer is null");
             return;
         }
-        World world = commandBuffer.getExternalData().getWorld(); // just to show how to get the world if needed
-        Store<EntityStore> store = commandBuffer.getExternalData().getStore(); // just to show how to get the store if needed
+        World world = commandBuffer.getExternalData().getWorld();
+        Store<EntityStore> store = commandBuffer.getExternalData().getStore();
         Ref ref = interactionContext.getEntity();
         Player player = commandBuffer.getComponent(ref, Player.getComponentType());
         ItemStack stack = player.getInventory().getItemInHand();
         BsonDocument meta = stack.getMetadata();
+
 
 
         if(meta==null)meta = new BsonDocument();
@@ -76,24 +79,27 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
             meta.append("GauntletType",Codec.STRING.encode(type));
             meta.append(type,Codec.BSON_DOCUMENT.encode(gauntletData));
         }
+        BsonDocument finalMeta = meta;
+        CompletableFuture.runAsync(()-> player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(finalMeta)),world);
+
+        ServantMod.LOGGER.atInfo().log("Type :%s",type);
         switch (type){
             case "Miner"->{
-                summonMinerInteraction(world,player,ref,interactionContext,store,gauntletData);
-                break;
+                summonMinerInteraction(world,player,ref,interactionContext,store,meta,gauntletData);
             }
             case "LumberJack"->{
-                summonLumberJackInteraction(world,player,ref,interactionContext,store,gauntletData);
-                break;
+                summonLumberJackInteraction(world,player,ref,interactionContext,store,meta,gauntletData);
             }
             case "Collect"->{
-                summonCollectInteraction(world,player,ref,interactionContext,store,gauntletData);
+                summonCollectInteraction(world,player,ref,interactionContext,store,meta,gauntletData);
             }
             default -> {
 
             }
         }
     }
-    public void summonLumberJackInteraction (World world,Player player,Ref<EntityStore> ref, @NonNull InteractionContext interactionContext,Store<EntityStore> store,BsonDocument meta){
+
+    public void summonLumberJackInteraction (World world,Player player,Ref<EntityStore> ref, @NonNull InteractionContext interactionContext,Store<EntityStore> store,BsonDocument stackData,BsonDocument meta){
         CommandBuffer<EntityStore> commandBuffer = interactionContext.getCommandBuffer();
         if (commandBuffer == null) {
             interactionContext.getState().state = InteractionState.Failed;
@@ -128,6 +134,7 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
             meta = new BsonDocument();
         }
 
+        ServantMod.LOGGER.atInfo().log("Data %s",meta);
 
         RootInteraction rootInteraction = null;
         if(ref!=null){
@@ -154,6 +161,7 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
                 TreeManagerComponent managerComponent = store.getResource(ServantMod.TREE_MANAGER_COMPONENT);
 
                 scanArea(world,posOrigin.toVector3i(),25,managerComponent,resourceView);
+                ArrayList<String> uuids = new ArrayList<>();
                 CompletableFuture.runAsync(()->{
                     Pair<Ref<EntityStore>, INonPlayerCharacter> pair = NPCPlugin.get().spawnNPC(store,"miner_orden_entity",null,posOrigin,new Vector3f(90,0));
                     Ref<EntityStore> ref1 = pair.first();
@@ -162,22 +170,22 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
                     component1.dirty = true;
 
 
-
                     store.addComponent(ref1,ServantMod.MINER_COMPONENT,component);
                     store.addComponent(ref1, ServantMod.LUMBERJACK_COMPONENT,component1);
+                    uuids.add(((Entity)pair.value()).getUuid().toString());
                 },world);
-                ArrayList<String> uuids = new ArrayList<>();
+
                 for (int i = 0 ; i < 2 ; i++){
                     CompletableFuture.runAsync(()->{
                         Entity entity = (Entity) NPCPlugin.get().spawnNPC(store,"ServantLumberJack",null,posOrigin,new Vector3f(90,0)).right();
-
                         uuids.add(entity.getUuid().toString());
                     },world);
                 }
                 CompletableFuture.runAsync(()->{
-                    finalMeta.append("list",Codec.STRING_ARRAY.encode(uuids.toArray(new String[2])));
+                    finalMeta.append("list",Codec.STRING_ARRAY.encode(uuids.toArray(new String[3])));
                     ItemStack stack = player.getInventory().getItemInHand();
-                    player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(finalMeta));
+                    stackData.put("LumberJack",Codec.BSON_DOCUMENT.encode(finalMeta));
+                    player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
                 },world);
 
             }else {
@@ -198,7 +206,8 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
                     }
                     ItemStack stack = player.getInventory().getItemInHand();
 
-                    player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(finalMeta));
+
+                    player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
                 },world);
             }
         }
@@ -209,7 +218,7 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
         }
     }
 
-    public void summonCollectInteraction (World world,Player player,Ref<EntityStore> ref, @NonNull InteractionContext interactionContext,Store<EntityStore> store,BsonDocument meta){
+    public void summonCollectInteraction (World world,Player player,Ref<EntityStore> ref, @NonNull InteractionContext interactionContext,Store<EntityStore> store,BsonDocument stackData,BsonDocument meta){
         CommandBuffer<EntityStore> commandBuffer = interactionContext.getCommandBuffer();
         if (commandBuffer == null) {
             interactionContext.getState().state = InteractionState.Failed;
@@ -218,55 +227,95 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
         }
         ItemStack stack = player.getInventory().getItemInHand();
         boolean summoning = false;
+        RootInteraction rootInteraction = null;
 
         if (interactionContext.getTargetBlock()==null)return;
         BlockPosition pos = interactionContext.getTargetBlock();
         BlockType type = world.getBlockType(pos.x,pos.y,pos.z);
-        if(meta.containsKey("HasChest")){
-            if(meta.containsKey("Summoning")){
-                if (meta.getBoolean("Summoning").getValue()){
-                    summoning = true;
-                    meta.put("Summoning", Codec.BOOLEAN.encode(false));
-                    //Summoning
-                }else {
-                    meta.put("Summoning", Codec.BOOLEAN.encode(false));
-                    //Unsummoning
-                }
-            }else {
-                meta.append("Summoning", Codec.BOOLEAN.encode(true));
-                summoning = true;
-            }
-        }else if (type!=null && type.getBlockEntity()!=null && type.getBlockEntity().getComponent(ItemContainerBlock.getComponentType())!=null){
-            meta.put("ChestX",Codec.INTEGER.encode(pos.x));
-            meta.put("ChestY",Codec.INTEGER.encode(pos.y));
-            meta.put("ChestZ",Codec.INTEGER.encode(pos.z));
-            meta.put("HasChest",Codec.BOOLEAN.encode(true));
-            player.sendMessage(Message.raw("Chest Select :"+pos));
-        }
-        if (summoning){
-            BsonDocument finalMeta = meta;
-            CompletableFuture.runAsync(()->{
-                if (finalMeta.containsKey("ChestX")){
-                    int x = finalMeta.getInt32("ChestX").getValue();
-                    int y = finalMeta.getInt32("ChestY").getValue();
-                    int z = finalMeta.getInt32("ChestZ").getValue();
-                    Pair<Ref<EntityStore>, INonPlayerCharacter> pair = NPCPlugin.get().spawnNPC(store,"ServantCollect",null,new Vector3d(pos.x,pos.y+1.5D,pos.z),new Vector3f(90,0));
+        MovementStatesComponent states = commandBuffer.getComponent(ref, MovementStatesComponent.getComponentType());
+        ServantMod.LOGGER.atInfo().log("Data %s",meta);
 
-                    RecollectComponent component = new RecollectComponent();
-                    component.targetPos = new Vector3i(x,y,z);
-                    component.originPos = new Vector3i(pos.x,pos.y+1,pos.z);
-                    Ref<EntityStore> ref1 = pair.first();
-                    store.addComponent(ref1,ServantMod.RECOLLECT_COMPONENT,component);
-                }
+        if(states.getMovementStates().crouching){
+            if (type!=null && type.getBlockEntity()!=null && type.getBlockEntity().getComponent(ItemContainerBlock.getComponentType())!=null){
+                meta.put("ChestX",Codec.INTEGER.encode(pos.x));
+                meta.put("ChestY",Codec.INTEGER.encode(pos.y));
+                meta.put("ChestZ",Codec.INTEGER.encode(pos.z));
+                meta.put("HasChest",Codec.BOOLEAN.encode(true));
+                player.sendMessage(Message.raw("Chest Selected!").color(Color.GREEN));
+            }
+
+            CompletableFuture.runAsync(()->{
+                stackData.put("Collect",Codec.BSON_DOCUMENT.encode(meta));
+                player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
             },world);
         }else {
+            if(meta.containsKey("HasChest")){
+                if(meta.containsKey("Summoning")){
+                    if (meta.getBoolean("Summoning").getValue()){
+                        summoning = false;
+                        meta.put("Summoning", Codec.BOOLEAN.encode(false));
+                    }else {
+                        summoning = true;
+                        meta.put("Summoning", Codec.BOOLEAN.encode(true));
+                    }
+                }else {
+                    meta.append("Summoning", Codec.BOOLEAN.encode(true));
+                    summoning = true;
+                }
+            }
+            BsonDocument finalMeta = meta;
+            if (summoning){
+                rootInteraction=RootInteraction.getRootInteractionOrUnknown("Root_Desummon_Demon");
 
+                CompletableFuture.runAsync(()->{
+                    if (finalMeta.containsKey("list")){
+                        for (BsonValue uuid : finalMeta.getArray("list").asArray().getValues()){
+                            Ref<EntityStore> ref1=world.getEntityStore().getRefFromUUID(UUID.fromString(uuid.asString().getValue()));
+                            if(ref1==null || !ref1.isValid())continue;
+                            NPCEntity entity = store.getComponent(ref1, NPCEntity.getComponentType());
+                            Vector3d pos1 = entity.getOldPosition();
+                            world.getNotificationHandler().sendBlockParticle(pos1.x+0.5F, (pos1.y + 1.5),pos1.z+0.5F, BlockType.getBlockIdOrUnknown("Rock_Crystal_Red_Block"," "), BlockParticleEvent.Break);
+
+                            entity.remove();
+                        }
+                    }
+
+                    player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
+                },world);
+            }else {
+                rootInteraction = RootInteraction.getRootInteractionOrUnknown("Root_Summon_Demon");
+
+                List<String> uuids = new ArrayList<>();
+                CompletableFuture.runAsync(()->{
+                    if (finalMeta.containsKey("ChestX")){
+                        int x = finalMeta.getInt32("ChestX").getValue();
+                        int y = finalMeta.getInt32("ChestY").getValue();
+                        int z = finalMeta.getInt32("ChestZ").getValue();
+                        Pair<Ref<EntityStore>, INonPlayerCharacter> pair = NPCPlugin.get().spawnNPC(store,"ServantCollect",null,new Vector3d(pos.x,pos.y+1.5D,pos.z),new Vector3f(90,0));
+
+                        RecollectComponent component = new RecollectComponent();
+                        component.targetPos = new Vector3i(x,y,z);
+                        component.originPos = new Vector3i(pos.x,pos.y+1,pos.z);
+                        Ref<EntityStore> ref1 = pair.first();
+                        store.addComponent(ref1,ServantMod.RECOLLECT_COMPONENT,component);
+                        uuids.add( ((Entity)pair.right()).getUuid().toString());
+                    }
+                },world);
+
+                CompletableFuture.runAsync(()->{
+                    finalMeta.append("list",Codec.STRING_ARRAY.encode(uuids.toArray(new String[1])));
+                    stackData.put("Collect",Codec.BSON_DOCUMENT.encode(finalMeta));
+                    player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
+                },world);
+            }
+            if(rootInteraction!=null){
+                interactionContext.getChain().pushRoot(rootInteraction,false);
+            }
         }
-        player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(meta));
 
     }
 
-    public void summonMinerInteraction (World world,Player player,Ref<EntityStore> ref, @NonNull InteractionContext interactionContext,Store<EntityStore> store,BsonDocument meta){
+    public void summonMinerInteraction (World world,Player player,Ref<EntityStore> ref, @NonNull InteractionContext interactionContext,Store<EntityStore> store,BsonDocument stackData,BsonDocument meta){
         AreaOrderComponent areaOrderComponent = store.getComponent(ref,ServantMod.AREA_COMPONENT);
         if (areaOrderComponent==null){
             areaOrderComponent = new AreaOrderComponent();
@@ -278,7 +327,7 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
         MinerComponent component = new MinerComponent();
         component.targetPos = new Vector3i(width,1,width);
 
-
+        ServantMod.LOGGER.atInfo().log("Data %s",meta);
         boolean summoning;
         if (meta != null) {
             if(!meta.containsKey("Summoning")){
@@ -295,7 +344,7 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
             meta = new BsonDocument();
         }
 
-        ServantMod.LOGGER.atInfo().log("Data %s",meta);
+
 
         RootInteraction rootInteraction = null;
         if(ref!=null){
@@ -307,13 +356,15 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
                 double z = interactionContext.getTargetBlock().z;
                 Vector3d posOrigin = new Vector3d(x,y+1.5D,z);
                 BsonDocument finalMeta = meta;
+                ArrayList<String> uuids = new ArrayList<>();
                 CompletableFuture.runAsync(()->{
                     Pair<Ref<EntityStore>, INonPlayerCharacter> pair = NPCPlugin.get().spawnNPC(store,"miner_orden_entity",null,posOrigin, Vector3f.NaN);
 
                     Ref<EntityStore> ref1 = pair.first();
                     store.addComponent(ref1,ServantMod.MINER_COMPONENT,component);
+                    uuids.add(((Entity) pair.value()).getUuid().toString());
                 },world);
-                ArrayList<String> uuids = new ArrayList<>();
+
                 for (int i = 0 ; i < 5 ; i++){
                     CompletableFuture.runAsync(()->{
                         Entity entity = (Entity) NPCPlugin.get().spawnNPC(store,"ServantMiner",null,posOrigin,new Vector3f(90,0)).right();
@@ -321,11 +372,20 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
                     },world);
                 }
                 CompletableFuture.runAsync(()->{
-                    finalMeta.append("list",Codec.STRING_ARRAY.encode(uuids.toArray(new String[5])));
+                    finalMeta.append("list",Codec.STRING_ARRAY.encode(uuids.toArray(new String[6])));
                     ItemStack stack = player.getInventory().getItemInHand();
-                    player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(finalMeta));
+                    stackData.put("Miner",Codec.BSON_DOCUMENT.encode(finalMeta));
+                    player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
                 },world);
-
+                if (meta.containsKey("debug_x")) {
+                    meta.put("debug_x",Codec.DOUBLE.encode((double) x));
+                    meta.put("debug_y",Codec.DOUBLE.encode((double) y));
+                    meta.put("debug_z",Codec.DOUBLE.encode((double) z));
+                }else {
+                    meta.append("debug_x", Codec.DOUBLE.encode((double) x));
+                    meta.append("debug_y", Codec.DOUBLE.encode((double) y));
+                    meta.append("debug_z", Codec.DOUBLE.encode((double) z));
+                }
             }else {
                 rootInteraction=RootInteraction.getRootInteractionOrUnknown("Root_Desummon_Demon");
 
@@ -343,8 +403,7 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
                         }
                         ItemStack stack = player.getInventory().getItemInHand();
 
-                        player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(finalMeta));
-
+                        player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
                     }
                 },world);
             }

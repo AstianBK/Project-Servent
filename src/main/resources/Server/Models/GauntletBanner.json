@@ -1,6 +1,6 @@
 {
   "Model": "NPC/Servant/models/commandgauntlet.blockymodel",
-  "Texture": "NPC/Servant/models/commandgauntlet.png",
+  "Texture": "NPC/Servant/models/gauntlet_invisible.png",
   "EyeHeight": 0.9,
   "CrouchOffset": -0.25,
   "HitBox": {

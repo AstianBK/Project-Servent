@@ -28,9 +28,6 @@
       },
       "Instructions": [
         {
-          "Reference": "Component_Instruction_Clear_Status_Animation"
-        },
-        {
           "Sensor": {
             "Type": "Any"
           },
@@ -79,9 +76,6 @@
         "State": "SearchNextBlock"
       },
       "Instructions": [
-        {
-          "Reference": "Component_Instruction_Clear_Status_Animation"
-        },
         {
           "Sensor": {
             "Type": "BlockMiner",

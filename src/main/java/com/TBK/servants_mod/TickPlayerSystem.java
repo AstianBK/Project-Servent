@@ -1,7 +1,6 @@
 package com.TBK.servants_mod;
 
 import com.TBK.servants_mod.component.AreaOrderComponent;
-import com.TBK.servants_mod.ui.pages.InfoPanelPage;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
@@ -27,7 +26,6 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import java.util.concurrent.CompletableFuture;
 
 public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
 
@@ -49,7 +47,7 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
         PacketHandler connection = player.getPlayerConnection();
 
 
-        if (stack == null){
+        if (stack == null || !stack.getItemId().equals("Gauntlet")){
             connection.write(new ClearDebugShapes());
             return;
         }
@@ -59,36 +57,40 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
             }else {
                 stack.getMetadata().append("debug",Codec.BOOLEAN.encode(false));
             }
-        }
-        if(stack.getItemId().equals("Contract_Item")){
-            CompletableFuture.runAsync(
-                    () -> {
-                        if (player.getPageManager().getCustomPage()==null){
-                            InfoPanelPage page = new InfoPanelPage(player.getPlayerRef(), 1, 1, "100");
-                            player.getPageManager().openCustomPage(ref, store, page);
-                        }
-                    });
+            BsonDocument stackData = stack.getMetadata();
+            String type = "Miner";
+            if (stackData.containsKey("GauntletType")){
+                type = ServantUtil.getGauntletType(stackData);
+            }
 
-            tickManagerMiner(ref,player.getWorld(),store,stack,player,areaOrderComponent);
-        }else if (stack.getItemId().equals("ContractRecollectItem")){
-            tickManagerCollect(ref,player.getWorld(),store,stack,player,areaOrderComponent);
-        }else if (stack.getItemId().equals("GauntletLumberJack")){
-            tickManagerLumberJack(ref,player.getWorld(),store,stack,player,areaOrderComponent);
-        }else {
-            connection.write(new ClearDebugShapes());
+            BsonDocument meta = ServantUtil.getGauntletTypeData(stackData,type);
+            if (meta==null)return;
+            switch (type){
+                case "Miner"->{
+                    tickManagerMiner(ref,player.getWorld(),store,stack,stackData,meta,player,areaOrderComponent);
+                }
+                case "LumberJack"->{
+                    tickManagerLumberJack(ref,player.getWorld(),store,stack,stackData,meta,player,areaOrderComponent);
+                }
+                case "Collect"->{
+                    tickManagerCollect(ref,player.getWorld(),store,stack,stackData,meta,player,areaOrderComponent);
+                }
+                default -> {
+                    connection.write(new ClearDebugShapes());
+
+                }
+            }
+
         }
     }
 
-    public static void tickManagerLumberJack(Ref<EntityStore> ref, World world, ComponentAccessor<EntityStore> store, ItemStack stack, Player player, AreaOrderComponent areaOrderComponent){
+    public static void tickManagerLumberJack(Ref<EntityStore> ref, World world, ComponentAccessor<EntityStore> store, ItemStack stack,BsonDocument stackData,BsonDocument meta, Player player, AreaOrderComponent areaOrderComponent){
         PacketHandler connection = player.getPlayerConnection();
         HeadRotation headComponent = store.getComponent(ref,HeadRotation.getComponentType());
 
         if(headComponent==null)return;
 
 
-        com.hypixel.hytale.math.vector.Vector3f pos = com.hypixel.hytale.math.vector.Vector3f.add(player.getTransformComponent().getPosition().toVector3f(),new com.hypixel.hytale.math.vector.Vector3f(0,1.6F,0)) ;
-
-        BsonDocument meta = stack.getMetadata();
         if (meta == null) meta = new BsonDocument();
 
 
@@ -116,8 +118,8 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
                             0,0,width-0.04F,0,
                             lastX, lastY+0.1F, lastZ,1
                     };
-                    DisplayDebug debug = new DisplayDebug(DebugShape.Cube, matrix, new com.hypixel.hytale.protocol.Vector3f(0,1,0), 9999f, (byte) DebugFlags.NoSolid.getValue(), null, 0.05f);
-                    connection.write(debug);
+//                    DisplayDebug debug = new DisplayDebug(DebugShape.Cube, matrix, new com.hypixel.hytale.protocol.Vector3f(0,1,0), 9999f, (byte) DebugFlags.NoSolid.getValue(), null, 0.05f);
+//                    connection.write(debug);
                     drawCubeOutline(world,new Vector3d(lastX,lastY-49.5D,lastZ),width+0.05F,99,new Vector3f(1,0,0),0.05, 9999f, DebugFlags.NoSolid.getValue(), connection);
                 }
             }else{
@@ -125,10 +127,11 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
 
             }
         }
-        player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(meta));
+        stackData.put("LumberJack",Codec.BSON_DOCUMENT.encode(meta));
+        player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
 
     }
-    public static void tickManagerCollect(Ref<EntityStore> ref, World world, ComponentAccessor<EntityStore> store, ItemStack stack, Player player, AreaOrderComponent areaOrderComponent){
+    public static void tickManagerCollect(Ref<EntityStore> ref, World world, ComponentAccessor<EntityStore> store, ItemStack stack,BsonDocument stackData,BsonDocument meta, Player player, AreaOrderComponent areaOrderComponent){
         PacketHandler connection = player.getPlayerConnection();
         HeadRotation headComponent = store.getComponent(ref,HeadRotation.getComponentType());
 
@@ -136,7 +139,6 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
 
 
 
-        BsonDocument meta = stack.getMetadata();
         if (meta == null) meta = new BsonDocument();
 
 
@@ -171,10 +173,10 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
                 connection.write(new ClearDebugShapes());
             }
         }
-        player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(meta));
-
+        stackData.put("Collect",Codec.BSON_DOCUMENT.encode(meta));
+        player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
     }
-    public static void tickManagerMiner(Ref<EntityStore> ref, World world, ComponentAccessor<EntityStore> store, ItemStack stack, Player player, AreaOrderComponent areaOrderComponent){
+    public static void tickManagerMiner(Ref<EntityStore> ref, World world, ComponentAccessor<EntityStore> store, ItemStack stack,BsonDocument stackData,BsonDocument meta, Player player, AreaOrderComponent areaOrderComponent){
         PacketHandler connection = player.getPlayerConnection();
         HeadRotation headComponent = store.getComponent(ref,HeadRotation.getComponentType());
 
@@ -183,7 +185,6 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
 
         com.hypixel.hytale.math.vector.Vector3f pos = com.hypixel.hytale.math.vector.Vector3f.add(player.getTransformComponent().getPosition().toVector3f(),new com.hypixel.hytale.math.vector.Vector3f(0,1.6F,0)) ;
 
-        BsonDocument meta = stack.getMetadata();
         if (meta == null) meta = new BsonDocument();
 
 
@@ -268,13 +269,14 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
                 drawCubeOutline(world,new Vector3d(finalX,finalY-0.4F,finalZ),width+0.05F,1,new Vector3f(1,0,0),0.05, 9999f, DebugFlags.NoSolid.getValue(), connection);
 
             }else {
-                if (!meta.getBoolean("debug").getValue()){
-                    connection.write(new ClearDebugShapes());
-                    if (meta.containsKey("debug")){
+                if (meta.containsKey("debug")){
+                    if (!meta.getBoolean("debug").getValue()){
+                        connection.write(new ClearDebugShapes());
                         meta.put("debug",Codec.BOOLEAN.encode(true));
-                    }else {
-                        meta.append("debug",Codec.BOOLEAN.encode(true));
                     }
+                }else {
+                    meta.append("debug",Codec.BOOLEAN.encode(true));
+                    connection.write(new ClearDebugShapes());
                 }
 
                 if (meta.containsKey("debug_x")) {
@@ -291,11 +293,12 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
 //                    };
 //                    DisplayDebug debug = new DisplayDebug(DebugShape.Cube, matrix, new com.hypixel.hytale.protocol.Vector3f(0,1,0), 9999f, (byte) DebugFlags.NoSolid.getValue(), null, 0.1f);
 //                    connection.write(debug);
-                    drawCubeOutline(world,new Vector3d(lastX,lastY-49.5D,lastZ),width+0.05F,99,new Vector3f(1,0,0),0.05, 9999f, DebugFlags.NoSolid.getValue(), connection);
+                    drawCubeOutline(world,new Vector3d(lastX + 0.5F,lastY-49.5D,lastZ + 0.5F),width+0.05F,99,new Vector3f(1,0,0),0.05, 9999f, DebugFlags.NoSolid.getValue(), connection);
                 }
             }
         }
-        player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(meta));
+        stackData.put("Miner",Codec.BSON_DOCUMENT.encode(meta));
+        player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
 
     }
     public static void drawCubeOutline(@Nonnull World world, @Nonnull Vector3d center, float width, float height, @Nonnull Vector3f color, double thickness, float time, int flags,PacketHandler connection) {

@@ -1,6 +1,7 @@
 package com.TBK.servants_mod.sensor;
 
 import com.TBK.servants_mod.ServantMod;
+import com.TBK.servants_mod.ServantUtil;
 import com.TBK.servants_mod.component.LumberjackZoneComponent;
 import com.TBK.servants_mod.component.MinerComponent;
 import com.TBK.servants_mod.component.MinerSectionComponent;
@@ -57,7 +58,6 @@ public class SensorLumberJack extends SensorBase {
 
     @Override
     public boolean matches(@Nonnull Ref<EntityStore> ref, @Nonnull Role role, double dt, @Nonnull Store<EntityStore> store) {
-
         if (!super.matches(ref, role, dt, store)) {
             this.positionProvider.clear();
             return false;
@@ -74,7 +74,6 @@ public class SensorLumberJack extends SensorBase {
 
         Blackboard blackboard = store.getResource(Blackboard.getResourceType());
 
-        // 👇 LEER MENSAJE DEL BEACON
         BeaconSupport message = store.getComponent(ref,BeaconSupport.getComponentType());
 
         if (message == null) {
@@ -101,15 +100,21 @@ public class SensorLumberJack extends SensorBase {
 
         Vector3i npcPos = transform.getPosition().toVector3i();
 
+
         for (TreeData tree : zone.trees) {
 
             Vector3i base = tree.center;
+            ResourceView resourceView = (ResourceView) blackboard.getView(
+                    ResourceView.class,
+                    ResourceView.indexViewFromWorldPosition(base.toVector3d())
+            );
+            if (!resourceView.isBlockReserved(base.x,base.y,base.z) && !ServantUtil.isAir(world,base.x,base.y,base.z)){
+                double dist = npcPos.distanceTo(base);
 
-            double dist = npcPos.distanceTo(base);
-
-            if (dist < bestDist) {
-                bestDist = dist;
-                best = base;
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    best = base;
+                }
             }
         }
 
@@ -117,10 +122,7 @@ public class SensorLumberJack extends SensorBase {
             this.positionProvider.clear();
             return false;
         }
-        ResourceView resourceView = (ResourceView) blackboard.getView(
-                ResourceView.class,
-                ResourceView.indexViewFromWorldPosition(best.toVector3d())
-        );
+        ResourceView resourceView = (ResourceView) blackboard.getView(ResourceView.class, ResourceView.indexViewFromWorldPosition(best.toVector3d()));
 
         if (resourceView != null) {
             resourceView.reserveBlock(npc, best.x, best.y, best.z);
@@ -145,6 +147,7 @@ public class SensorLumberJack extends SensorBase {
         this.positionProvider.setTarget(target);
         return true;
     }
+
     private boolean isLog(World world, int x, int y, int z) {
         BlockType t = world.getBlockType(x, y, z);
 
