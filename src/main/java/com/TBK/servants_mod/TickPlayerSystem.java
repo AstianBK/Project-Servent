@@ -115,13 +115,13 @@ public class TickPlayerSystem extends EntityTickingSystem<EntityStore> {
                     float width = 50;
                     float[] matrix = new float[]{
                             width-0.04F,0,0,0,
-                            0,99,0,0,
+                            0,150,0,0,
                             0,0,width-0.04F,0,
                             lastX, lastY+0.1F, lastZ,1
                     };
 //                    DisplayDebug debug = new DisplayDebug(DebugShape.Cube, matrix, new com.hypixel.hytale.protocol.Vector3f(0,1,0), 9999f, (byte) DebugFlags.NoSolid.getValue(), null, 0.05f);
 //                    connection.write(debug);
-                    drawCubeOutline(world,new Vector3d(lastX,lastY-49.5D,lastZ),width+0.05F,99,new Vector3f(1,0,0),0.05, 9999f, DebugFlags.NoSolid.getValue(), connection);
+                    drawCubeOutline(world,new Vector3d(lastX,lastY-75,lastZ),width+0.05F,99,new Vector3f(1,0,0),0.05, 9999f, DebugFlags.NoSolid.getValue(), connection);
                 }
             }else{
                 connection.write(new ClearDebugShapes());

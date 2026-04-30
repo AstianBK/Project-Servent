@@ -1,0 +1,26 @@
+{
+  "Type": "Variant",
+  "Reference": "Template_Summoned_Ally",
+  "Modify": {
+    "MaxHealth": 74,
+    "HearingRange": 8,
+    "ViewSector": 270,
+    "Appearance": "ServantFighter",
+    "Weapons": ["Weapon_Sword_Steel_Rusty"],
+    "DefaultOffHandSlot": 0,
+    "FlockArray": ["ServantSoldier"],
+    "Attack": "Root_Attack_Servant",
+    "AttackDistance": 3,
+    "AttackPauseRange": [1, 1.5],
+    "CombatAttackPreDelay": [0.1, 0.3],
+    "DesiredAttackDistanceRange": [1, 2],
+    "DespawnTimer": 999999,
+    "MaxSpeed": 12,
+    "ApplySeparation": true,
+    "BreathesInWater": true,
+    "CombatBackOffAfterAttack": false,
+    "CombatStrafingDurationRange": [0.2, 1],
+    "BlockProbability": 0,
+    "NameTranslationKey": "server.npcRoles.Skeleton_Knight.name"
+  }
+}

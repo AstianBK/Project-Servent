@@ -94,6 +94,9 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
             case "Collect"->{
                 summonCollectInteraction(world,player,ref,interactionContext,store,meta,gauntletData);
             }
+            case "Fighter"->{
+                summonFighterInteraction(world,player,ref,interactionContext,store,meta,gauntletData);
+            }
             default -> {
 
             }
@@ -316,6 +319,78 @@ public class GauntletServantInteraction  extends SimpleInstantInteraction {
         }
 
     }
+
+    public void summonFighterInteraction (World world,Player player,Ref<EntityStore> ref, @NonNull InteractionContext interactionContext,Store<EntityStore> store,BsonDocument stackData,BsonDocument meta){
+        boolean summoning;
+        if (meta != null) {
+            if(!meta.containsKey("Summoning")){
+                meta.append("Summoning", Codec.BOOLEAN.encode(true));
+                summoning = true;
+            }else{
+                boolean flag = meta.getBoolean("Summoning").getValue();
+                meta.put("Summoning",Codec.BOOLEAN.encode(!flag));
+                summoning = !flag;
+            }
+        }else {
+            summoning = false;
+            meta = new BsonDocument();
+        }
+
+
+
+        RootInteraction rootInteraction = null;
+        if(ref!=null){
+            rootInteraction = RootInteraction.getRootInteractionOrUnknown("Root_Summon_Demon");
+            if (summoning && interactionContext.getTargetBlock()!=null){
+
+                double x = interactionContext.getTargetBlock().x;
+                double y = interactionContext.getTargetBlock().y;
+                double z = interactionContext.getTargetBlock().z;
+                Vector3d posOrigin = new Vector3d(x,y+1.5D,z);
+                BsonDocument finalMeta = meta;
+                ArrayList<String> uuids = new ArrayList<>();
+                for (int i = 0 ; i < 3; i++){
+                    CompletableFuture.runAsync(()->{
+                        Entity entity = (Entity) NPCPlugin.get().spawnNPC(store,"ServantSoldier",null,posOrigin,new Vector3f(90,0)).right();
+                        uuids.add(entity.getUuid().toString());
+                    },world);
+                }
+                CompletableFuture.runAsync(()->{
+                    finalMeta.append("list",Codec.STRING_ARRAY.encode(uuids.toArray(new String[3])));
+                    ItemStack stack = player.getInventory().getItemInHand();
+                    stackData.put("Fighter",Codec.BSON_DOCUMENT.encode(finalMeta));
+                    player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
+                },world);
+            }else {
+                rootInteraction=RootInteraction.getRootInteractionOrUnknown("Root_Desummon_Demon");
+
+                BsonDocument finalMeta = meta;
+                CompletableFuture.runAsync(()->{
+                    if (finalMeta.containsKey("list")){
+                        for (BsonValue uuid : finalMeta.getArray("list").asArray().getValues()){
+                            Ref<EntityStore> ref1=world.getEntityStore().getRefFromUUID(UUID.fromString(uuid.asString().getValue()));
+                            if(ref1==null || !ref1.isValid())continue;
+                            NPCEntity entity = store.getComponent(ref1, NPCEntity.getComponentType());
+                            Vector3d pos = entity.getOldPosition();
+                            world.getNotificationHandler().sendBlockParticle(pos.x+0.5F, (pos.y + 1.5),pos.z+0.5F, BlockType.getBlockIdOrUnknown("Rock_Crystal_Red_Block"," "), BlockParticleEvent.Break);
+
+                            entity.remove();
+                        }
+                        ItemStack stack = player.getInventory().getItemInHand();
+
+                        player.getInventory().getHotbar().replaceItemStackInSlot(player.getInventory().getActiveHotbarSlot(),stack,stack.withMetadata(stackData));
+                    }
+                },world);
+            }
+        }
+
+
+        if(rootInteraction!=null){
+            interactionContext.getChain().pushRoot(rootInteraction,false);
+        }
+
+    }
+
 
     public void summonMinerInteraction (World world,Player player,Ref<EntityStore> ref, @NonNull InteractionContext interactionContext,Store<EntityStore> store,BsonDocument stackData,BsonDocument meta){
         AreaOrderComponent areaOrderComponent = store.getComponent(ref,ServantMod.AREA_COMPONENT);

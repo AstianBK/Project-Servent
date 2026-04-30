@@ -69,6 +69,7 @@ public class SelectServantPage extends InteractiveCustomUIPage<SelectServantPage
     public void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder commandBuilder, @Nonnull UIEventBuilder eventBuilder, @Nonnull Store<EntityStore> store) {// Load the UI layout
         commandBuilder.append("Pages/SelectServant.ui");
 
+        eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#FighterButtom",new EventData().append("Key", "Fighter"));
 
         eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#MinerButtom",new EventData().append("Key", "Miner"));
         eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#LumberJackButtom",new EventData().append("Key", "LumberJack"));

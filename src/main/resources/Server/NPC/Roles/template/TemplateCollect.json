@@ -105,7 +105,7 @@
         {
           "Sensor": {
             "Type": "DroppedItem",
-            "Range": 50,
+            "Range": 14,
             "Items": ["*"]
           },
           "Actions": [
@@ -145,19 +145,8 @@
               "Blocking": true,
               "Actions": [
                 {
-                  "Type": "Timeout",
-                  "Delay": [1, 1],
-                  "DelayAfter": true,
-                  "Action": {
-                    "Type": "PlayAnimation",
-                    "Slot": "Status",
-                    "Animation": "Pick"
-                  }
-                },
-                {
                   "Type": "PickUpItem",
                   "Items": ["*"],
-                  "Delay": [0.1, 0.1],
                   "StorageTarget": "Inventory"
                 }
               ]
@@ -174,8 +163,17 @@
           },
           "Actions": [
             {
-              "Type": "State",
-              "State": "SearchItems"
+              "Type": "PlayAnimation",
+              "Slot": "Status",
+              "Animation": "Pick"
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [0.8, 0.8],
+              "Action": {
+                "Type": "State",
+                "State": "SearchItems"
+              }
             }
           ]
         }
@@ -188,6 +186,9 @@
         "State": "ToChest"
       },
       "Instructions": [
+        {
+          "Reference": "Component_Instruction_Clear_Status_Animation"
+        },
         {
           "Sensor": {
             "Type": "ReadPosition",
@@ -221,6 +222,9 @@
       },
       "Instructions": [
         {
+          "Reference": "Component_Instruction_Clear_Status_Animation"
+        },
+        {
           "Sensor": {
             "Type": "Any"
           },
@@ -229,10 +233,6 @@
               "Type": "Sequence",
               "Blocking": true,
               "Actions": [
-                {
-                  "Type": "Timeout",
-                  "Delay": [5, 10.25]
-                },
                 {
                   "Type": "AddItemsToInventory"
                 },
@@ -254,6 +254,9 @@
       },
       "Instructions": [
         {
+          "Reference": "Component_Instruction_Clear_Status_Animation"
+        },
+        {
           "Sensor": {
             "Type": "ReadPosition",
             "Slot": "OriginPos",
@@ -272,7 +275,7 @@
             },
             {
               "Type": "State",
-              "State": "Collect"
+              "State": "SearchItems"
             }
           ]
         }

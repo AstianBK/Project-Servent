@@ -54,13 +54,15 @@
       ]
     },
     "Hurt": {
+
       "Animations": [
         {
-          "Animation": "NPC/Servant/animations/fighter.hurt.blockyanim"
+          "Animation": "NPC/Servant/animations/fighter.hurt.blockyanim",
+          "Looping": false
         }
       ]
     },
-    "Attack": {
+    "SwingLeft": {
       "Animations": [
         {
           "Animation": "NPC/Servant/animations/fighter.attack.blockyanim"

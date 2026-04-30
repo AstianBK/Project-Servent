@@ -1,0 +1,283 @@
+{
+  "Type": "Abstract",
+  "StartState": "Idle",
+  "Appearance": {
+    "Compute": "Appearance"
+  },
+  "MaxHealth": {
+    "Compute": "MaxHealth"
+  },
+  "NameTranslationKey": {
+    "Compute": "NameTranslationKey"
+  },
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 10,
+      "Gravity": 10,
+      "MaxFallSpeed": 8,
+      "Acceleration": 10
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Mob",
+            "Range": {
+              "Compute": "ChaseRange"
+            },
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": ["Hostile"]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Chase"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Chase"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Mob",
+            "Range": {
+              "Compute": "LoseRange"
+            },
+            "HasTarget": true
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ],
+          "Invert": true
+        },
+        {
+          "Sensor": {
+            "Type": "Mob",
+            "Range": {
+              "Compute": "AttackRange"
+            },
+            "LockedTargetSlot": "Target",
+            "HasTarget": true
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Attack"
+            }
+          ],
+          "BodyMotion": {
+            "Type": "Seek",
+            "StopDistance": 2,
+            "SlowDownDistance": 5,
+            "RelativeSpeed": 1
+          },
+          "Continue": true
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Attack"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Mob",
+            "Range": {
+              "Compute": "LoseRange"
+            },
+            "HasTarget": true
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ],
+          "Invert": true
+        },
+        {
+          "Sensor": {
+            "Type": "State",
+            "State": ".Default"
+          },
+          "Instructions": [
+            {
+              "Sensor": {
+                "Type": "Mob",
+                "Range": 3,
+                "LockOnTarget": true
+              },
+              "Actions": [
+                {
+                  "Type": "State",
+                  "State": "Attack.Melee"
+                }
+              ],
+              "BodyMotion": {
+                "Type": "Seek",
+                "StopDistance": 2,
+                "SlowDownDistance": 4,
+                "RelativeSpeed": 0.7
+              },
+              "Continue": true
+            },
+            {
+              "Sensor": {
+                "Type": "Mob",
+                "Range": 10,
+                "LockOnTarget": true,
+                "LockedTargetSlot": "Target"
+              },
+              "Actions": [
+                {
+                  "Type": "State",
+                  "State": "Attack.Ranged"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "State",
+            "State": ".Melee"
+          },
+          "Instructions": [
+            {
+              "Sensor": {
+                "Type": "Mob",
+                "Range": 2.5,
+                "LockOnTarget": true,
+                "LockedTargetSlot": "Target"
+              },
+              "Actions": [
+                {
+                  "Type": "Timeout",
+                  "Delay": [0.6, 1.2],
+                  "Action": {
+                    "Type": "Attack",
+                    "Attack": "Root_NPC_Attack_Melee"
+                  }
+                }
+              ],
+              "BodyMotion": {
+                "Type": "Seek",
+                "StopDistance": 2,
+                "SlowDownDistance": 3,
+                "RelativeSpeed": 0.8
+              },
+              "Continue": true
+            },
+            {
+              "Sensor": {
+                "Type": "Mob",
+                "Range": 6,
+                "MinRange": 3,
+                "LockOnTarget": true
+              },
+              "Actions": [
+                {
+                  "Type": "State",
+                  "State": "Attack.Default"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "State",
+            "State": ".Ranged"
+          },
+          "Instructions": [
+            {
+              "Sensor": {
+                "Type": "Mob",
+                "Range": 12,
+                "LockOnTarget": true,
+                "LockedTargetSlot": "Target"
+              },
+              "Actions": [
+                {
+                  "Type": "Timeout",
+                  "Delay": [0.8, 1.5],
+                  "Action": {
+                    "Type": "Attack",
+                    "Attack": "NPC_Rubble_Throw"
+                  }
+                }
+              ],
+              "HeadMotion": {
+                "Type": "Aim"
+              }
+            },
+            {
+              "Sensor": {
+                "Type": "Mob",
+                "Range": 3,
+                "LockOnTarget": true
+              },
+              "Actions": [
+                {
+                  "Type": "State",
+                  "State": "Attack.Melee"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Parameters": {
+    "Appearance": {
+      "Value": "Goblin",
+      "Description": "Model"
+    },
+    "MaxHealth": {
+      "Value": 50,
+      "Description": "Health"
+    },
+    "AttackRange": {
+      "Value": 2.2,
+      "Description": "Attack distance"
+    },
+    "ChaseRange": {
+      "Value": 12,
+      "Description": "Detection range"
+    },
+    "LoseRange": {
+      "Value": 18,
+      "Description": "Lose target range"
+    },
+    "NameTranslationKey": {
+      "Value": "server.npcRoles.Template.name"
+    }
+  },
+  "HotbarItems": ["Weapon_Sword_Iron"],
+  "DefaultNPCAttitude": "Hostile",
+  "DefaultMobAttitude": "Hostile"
+}

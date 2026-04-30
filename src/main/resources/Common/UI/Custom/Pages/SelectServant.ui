@@ -1,5 +1,7 @@
-@PrimaryButtonStyle = TextButtonStyle(Default: (Background: #3a7bd5, LabelStyle: (FontSize: 16, TextColor: #ffffff, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Hovered: (Background: #4a8be5, LabelStyle: (FontSize: 16, TextColor: #ffffff, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Pressed: (Background: #2a6bc5, LabelStyle: (FontSize: 16, TextColor: #ffffff, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)));
-@SecondaryButtonStyle = TextButtonStyle(Default: (Background: #2b3542, LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Hovered: (Background: #3b4552, LabelStyle: (FontSize: 16, TextColor: #b6c9de, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Pressed: (Background: #1b2532, LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)));
+@MinerButtonStyle = TextButtonStyle(Default: (Background: (TexturePath: "gui_worker.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Hovered: (Background: (TexturePath: "gui_miner_select.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #b6c9de, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Pressed: (Background: (TexturePath: "gui_worker.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)));
+@LumberButtonStyle = TextButtonStyle(Default: (Background: (TexturePath: "gui_lumber.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Hovered: (Background: (TexturePath: "gui_lumberjack_select.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #b6c9de, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Pressed: (Background: (TexturePath: "gui_lumber.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)));
+@GathererButtonStyle = TextButtonStyle(Default: (Background: (TexturePath: "gui_gatherer.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Hovered: (Background: (TexturePath: "gui_gatherer_select.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #b6c9de, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Pressed: (Background: (TexturePath: "gui_gatherer.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)));
+@FighterButtonStyle = TextButtonStyle(Default: (Background: (TexturePath: "gui_fighter.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Hovered: (Background: (TexturePath: "gui_warrior_select.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #b6c9de, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)), Pressed: (Background: (TexturePath: "gui_fighter.png", Border: 4), LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, RenderUppercase: true, HorizontalAlignment: Center, VerticalAlignment: Center)));
 
 Group {
     Anchor: (Width: 750, Height: 500);
@@ -23,7 +25,7 @@ Group {
         TextButton #MinerButtom {
             Anchor: (Left: 250, Top: 0, Width: 192, Height: 192);
             Visible: true;
-            Background: (TexturePath: "gui_worker.png", Border: 4);
+            Style: @MinerButtonStyle;
         }
     }
 
@@ -37,7 +39,7 @@ Group {
 
         TextButton #LumberJackButtom {
             Anchor: (Width: 192, Height: 192);
-            Background: (TexturePath: "gui_lumber.png", Border: 4);
+            Style: @LumberButtonStyle;
         }
 
         Group {
@@ -46,7 +48,16 @@ Group {
 
         TextButton #CollectButtom {
             Anchor: (Width: 192, Height: 192);
-            Background: (TexturePath: "gui_gatherer.png", Border: 4);
+            Style: @GathererButtonStyle;
+        }
+    }
+
+    Group {
+        LayoutMode: Center;
+
+        TextButton #FighterButtom {
+            Anchor: (Width: 192, Height: 192);
+            Style:@FighterButtonStyle;
         }
     }
 }
